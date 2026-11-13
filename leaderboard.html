@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard — A Day at Boudreaux &amp; Chen</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:linear-gradient(160deg,#2b2350,#463a7a);color:#fff;min-height:100vh}
+  .wrap{max-width:1100px;margin:0 auto;padding:24px}
+  header{display:flex;flex-wrap:wrap;gap:12px;align-items:baseline;justify-content:space-between}
+  h1{font-size:40px;margin:0}
+  .sub{color:#cfc9ee;font-size:18px}
+  table{width:100%;border-collapse:collapse;margin-top:20px;font-size:30px}
+  th{font-size:15px;text-transform:uppercase;letter-spacing:.06em;color:#cfc9ee;text-align:left;padding:8px 14px}
+  td{padding:12px 14px;background:rgba(255,255,255,.08);border-bottom:4px solid transparent;background-clip:padding-box}
+  tr.first td{background:rgba(245,197,66,.25);background-clip:padding-box}
+  td.rank{width:70px;font-weight:800;color:#f5c542}
+  td.score,th.score{text-align:right;font-weight:900;font-variant-numeric:tabular-nums}
+  td.prog{font-size:18px;color:#cfc9ee;width:190px}
+  .empty{font-size:24px;color:#cfc9ee;margin-top:40px}
+  .controls{margin-top:24px;display:flex;gap:14px;align-items:center;flex-wrap:wrap;font-size:14px;color:#cfc9ee}
+  button{font:inherit;background:transparent;color:#fff;border:2px solid #cfc9ee;border-radius:8px;padding:8px 14px;cursor:pointer}
+  button:focus-visible{outline:3px solid #f5c542;outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>A Day at Boudreaux &amp; Chen</h1>
+    <span class="sub">Live leaderboard</span>
+  </header>
+  <div id="board" aria-live="polite"></div>
+  <div class="controls">
+    <button id="reset">Start a new round</button>
+    <span id="status"></span>
+  </div>
+</div>
+<script>
+const SB_URL = "https://tsbfzpivjuiqcanqbyyy.supabase.co";
+const SB_KEY = "sb_publishable_4_GsvO9WQugPMzsW90_dHw_O0go6RZv";
+const KEY = "law5622-round-start";
+
+/* A round shows only teams that have played since the round started. Old rows stay in the database but stay hidden. */
+function roundStart(){
+  let v=null; try{ v=localStorage.getItem(KEY); }catch(e){}
+  if(!v){ v=new Date().toISOString(); try{ localStorage.setItem(KEY,v); }catch(e){} }
+  return v;
+}
+let start = roundStart();
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+async function refresh(){
+  const st=document.getElementById("status");
+  try{
+    const r = await fetch(SB_URL+"/rest/v1/scores?select=*&updated_at=gte."+encodeURIComponent(start)+"&order=score.desc,updated_at.asc",{headers:{apikey:SB_KEY}});
+    if(!r.ok) throw new Error(r.status);
+    const rows = await r.json();
+    const b=document.getElementById("board");
+    if(!rows.length){ b.innerHTML='<p class="empty">Waiting for the first team to start the day…</p>'; }
+    else b.innerHTML = '<table><thead><tr><th>#</th><th>Team</th><th>Progress</th><th class="score">Score</th></tr></thead><tbody>' +
+      rows.map((x,i)=>`<tr class="${i===0?"first":""}"><td class="rank">${i+1}</td><td>${esc(x.team)}</td><td class="prog">${x.scene>=99?"Day complete":"Item "+(x.scene+1)}</td><td class="score">${x.score}</td></tr>`).join("") +
+      '</tbody></table>';
+    st.textContent = "Round started "+new Date(start).toLocaleTimeString()+" · updates every 2 seconds";
+  }catch(e){ st.textContent = "Connection problem. Retrying…"; }
+}
+document.getElementById("reset").onclick = ()=>{
+  if(confirm("Clear the board and start a new round?")){ start=new Date().toISOString(); try{ localStorage.setItem(KEY,start); }catch(e){} refresh(); }
+};
+refresh(); setInterval(refresh, 2000);
+</script>
+</body>
+</html>
