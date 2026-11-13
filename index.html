@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A Day at Boudreaux &amp; Chen</title>
+<title>A Day at Monroe &amp; Delacroix</title>
 <style>
   :root{
     --ink:#1d1a2b; --muted:#5d5a70; --paper:#fffdf7; --desk:#2b2350; --desk2:#463a7a;
@@ -98,8 +98,8 @@
 /* ---------- configuration ---------- */
 const SB_URL = "https://tsbfzpivjuiqcanqbyyy.supabase.co";
 const SB_KEY = "sb_publishable_4_GsvO9WQugPMzsW90_dHw_O0go6RZv";
-const FIRM = "Boudreaux & Chen, LLC";
-const STORE = "law5622-day-v1";
+const FIRM = "Monroe & Delacroix, LLC";
+const STORE = "law5622-day-v2";
 
 /* Team names come only from these lists, so no student name can reach the leaderboard. */
 const ADJ = ["Billable","Redacted","Privileged","Encrypted","Unmuted","Overruled","Sustained","Caffeinated","Verified","Paperless","Diligent","Reasonable","Docketed","Notarized"];
@@ -108,13 +108,116 @@ const NOUN = ["Pelicans","Crawfish","Gators","Egrets","Footnotes","Macros","Capt
 /* ---------- scenes ---------- */
 const SCENES = [
  {
+  id:"inventory", time:"8:05 AM", module:"The Practice Technology Landscape",
+  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
+  subject:"Insurance form wants a list of our \"technology\"",
+  issue:"Knowing what technology the firm actually uses, and who chose it",
+  body:["Good morning! The malpractice renewal form asks for every app and device the firm uses and where our data lives. It is due today. You took that class. Can you handle it?"],
+  narr:"You can name about five things from memory: Word, Outlook, the research platform, the printer that hates everyone, and something the paralegal calls \"the cloud.\"",
+  choices:[
+   {label:"Answer from memory. List the five things you can think of and send the form back before your coffee cools.", risk:2, prod:1, verdict:"bad",
+    result:"The firm signs a form listing five tools. It uses thirty-one, including a file-sharing app a paralegal installed in 2022 that has been quietly syncing client folders to her personal account ever since."},
+   {label:"Forward the form to Pelican Office Systems, the firm's IT vendor, and consider it handled.", risk:1, prod:2, verdict:"mixed",
+    result:"Pelican lists everything Pelican installed. It does not list anything people installed on their own, which is where the surprises live."},
+   {label:"Walk the office with a spreadsheet: product, publisher, version, whether the data is local or in the cloud, and whether each tool was mandated, a default, recommended, or actually chosen.", risk:0, prod:2, verdict:"good",
+    result:"It takes forty minutes. You find the mystery file-sharing app, two laptops nobody has updated in years, and the fact that nobody chose the PDF program. It just came with the computer."}
+  ],
+  debrief:{
+   ethics:"Can a firm protect client information in tools it does not know it is using?",
+   process:"Who at a firm should own the inventory, and how often should it be redone?",
+   tech:"Of the tools on your own inventory this semester, how many did you actually choose?"
+  }
+ },
+ {
+  id:"buying", time:"8:40 AM", module:"Planning and Buying Technology",
+  from:"Chad at BriefWright", addr:"chad@briefwright.example",
+  subject:"40% off ends at NOON (bank-grade encryption!!)",
+  issue:"Buying technology: requirements before products",
+  body:["Loved meeting your team! If Monroe & Delacroix signs the three-year BriefWright AI agreement by noon, I can lock in 40% off year one. Bank-grade encryption. Lawyers love it. Shall I send the signature page?"],
+  narr:"The demo last week was dazzling. Ms. Delacroix has replied-all with one line: \"You're the technology committee. Decide.\"",
+  choices:[
+   {label:"Write down the problem the firm is trying to solve first. Then ask Chad four things in writing: security, uptime, how lawyers supervise the output, and how accurate it is. Check what the firm's existing Microsoft 365 plan already does, and put the real cost in the three-year budget.", risk:0, prod:3, verdict:"good",
+    result:"Chad cannot say where uploaded client documents are stored. Half of what the firm wanted is already included in software it pays for. The noon deadline turns out to be flexible, as noon deadlines often are."},
+   {label:"Sign. The demo was great, and 40% is 40%.", risk:2, prod:1, verdict:"bad",
+    result:"In month thirteen the price goes up forty percent. Nobody asked where client documents go when they are uploaded, and \"bank-grade encryption\" turns out not to be a term with a definition."},
+   {label:"Say no. The firm has managed without it this long and can keep managing.", risk:0, prod:0, verdict:"mixed",
+    result:"Safe, and the firm keeps doing by hand what its competitors stopped doing by hand two years ago. \"No\" is a decision too, and you made it without knowing what problem was on the table."}
+  ],
+  debrief:{
+   ethics:"What does a lawyer have to know about a vendor before giving it client information?",
+   process:"What goes wrong when the product comes before the requirements?",
+   tech:"When the price jumps forty percent, how hard is it to leave?"
+  }
+ },
+ {
+  id:"intake", time:"9:15 AM", module:"Practice Management",
+  from:"Front Desk", addr:"reception@monroedelacroix.example",
+  subject:"New caller on line 2. She is ALREADY talking.",
+  issue:"Client intake: collecting enough to open a matter, and no more",
+  body:["Potential new client on line 2 about a dispute with her old employer. I tried to get her name and she started with the events of 2019. Transferring now. Good luck."],
+  narr:"You pick up. She is mid-sentence. She has documents, dates, and strong opinions about a supervisor named Gary. You do not yet know her name or who is on the other side.",
+  choices:[
+   {label:"Let her talk and write down everything. More information is always better.", risk:3, prod:1, verdict:"bad",
+    result:"Twenty minutes later you have four pages of confidential detail from a person whose former employer may be a client of this firm. The firm now knows things it cannot un-know, and the rule on prospective clients has opinions about that."},
+   {label:"Tell her you can't discuss anything by phone, ask her to email the firm, and hang up.", risk:0, prod:0, verdict:"mixed",
+    result:"No harm done. Also no client. She calls the firm down the street, which has an intake form and a person who uses it."},
+   {label:"Gently interrupt. Explain why, then follow the intake form: her name, the other parties, and the kind of matter. Stop there until the conflicts check is done.", risk:0, prod:3, verdict:"good",
+    result:"Three minutes. You have enough to open a matter and no more. She is told when she will hear back. You now know the other side is Delta Marine Supply, which sounds familiar."}
+  ],
+  debrief:{
+   ethics:"What does the firm owe someone who never becomes a client?",
+   process:"Which questions did you deliberately leave off your intake form, and why?",
+   tech:"What does a form do here that a good listener cannot?"
+  }
+ },
+ {
+  id:"conflicts", time:"10:00 AM", module:"Conflicts Checking",
+  from:"You (note to self)", addr:"a sticky note on your monitor",
+  subject:"Delta Marine Supply: why do I know this name?",
+  issue:"Conflicts checking before the firm takes the matter",
+  body:["The caller's former employer is Delta Marine Supply. She wants to sue them. She would like an answer today."],
+  narr:"The name itches. A sign on the highway? A client? A fishing show? Ms. Delacroix wants to know by 10:30 whether the firm can take the case.",
+  choices:[
+   {label:"Email all the lawyers: \"Anybody know a Delta Marine?\" If nobody answers by 10:30, call it clear.", risk:3, prod:1, verdict:"bad",
+    result:"Nobody answers, because everybody is busy. The firm accepts the case. Delta Marine Supply Inc. is a current client of this firm. Its general counsel learns about the new matter from the petition."},
+   {label:"Search the firm's conflicts workbook for the name, including former names and aliases. Report what you find to Ms. Delacroix as a match for her to evaluate.", risk:0, prod:3, verdict:"good",
+    result:"One match: Delta Marine Supply Inc., current client. You do not decide what it means. The check warns that a risk exists; the partner decides what to do about it, and she does, by 10:20."},
+   {label:"Trust the itch. Call the woman back yourself and tell her the firm can't help.", risk:1, prod:0, verdict:"mixed",
+    result:"You happened to be right, which is not the same as having checked. You also made a partner's decision on the strength of a feeling, and told a stranger more than she needed to know about who the firm represents."}
+  ],
+  debrief:{
+   ethics:"Who decides whether a match is a conflict, and what can be done about one?",
+   process:"Why does \"one fact, one place\" matter for finding a name?",
+   tech:"What would the search have missed if the company had changed its name?"
+  }
+ },
+ {
+  id:"deadline", time:"10:30 AM", module:"The Calendar",
+  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
+  subject:"Guidry judgment came in. Calendar it.",
+  issue:"Calculating and calendaring deadlines",
+  body:["Notice of the signing of judgment in Guidry v. Bayou Crown Roofing was mailed yesterday. We may want a new trial. We may want to appeal. Get the deadlines on the calendar before lunch."],
+  narr:"There is a paper wall calendar from a title company above your desk. There is also the firm's deadline calculator, a shared matter calendar, and an AI assistant that has never once said \"I don't know.\"",
+  choices:[
+   {label:"Use the firm's deadline calculator with its holiday table. Calendar the whole chain on the shared matter calendar, with reminders ahead of each date and a note of the clerk's filing cutoff time.", risk:0, prod:3, verdict:"good",
+    result:"Three deadlines, counted the way the rule says to count them, visible to everyone on the matter. The reminder fires two days early. The note about the clerk's cutoff will matter more than you expect."},
+   {label:"Count seven days on the wall calendar and put one entry on your own Outlook calendar.", risk:2, prod:1, verdict:"bad",
+    result:"Your date is wrong, because the rule does not count days the way a wall calendar does. Worse, the only copy lives on your calendar, and next week you have the flu. Nobody else knows the deadline exists."},
+   {label:"Ask the AI assistant when the motion is due and calendar whatever it says.", risk:3, prod:2, verdict:"bad",
+    result:"It gives you a confident date in one second. It cites no rule, has not heard of the holiday in the middle, and when asked \"are you sure?\" it apologizes and gives you a different confident date."}
+  ],
+  debrief:{
+   ethics:"A missed deadline is a classic malpractice claim. Who at the firm is responsible for the count?",
+   process:"What is the difference between a calendar entry and a calendaring system?",
+   tech:"The calculator can be right and the matter can still be blown. How?"
+  }
+ },
+ {
   id:"research", time:"11:15 AM", module:"Legal Research",
-  from:"Marguerite Boudreaux", addr:"mboudreaux@boudreauxchen.example",
+  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
   subject:"Quick question (it is not quick)",
   issue:"AI as a research tool, in an area where the lawyer isn't proficient",
-  body:[
-   "I need an answer on the servitude question before my 2:00 client call. You've been doing this for a year now, so I assume it's easy. Thanks!!",
-  ],
+  body:["I need an answer on the servitude question before my 2:00 client call. You've been doing this for a year now, so I assume it's easy. Thanks!!"],
   narr:"The question is esoteric. You try two natural-language searches and trust neither result. So you paste the partner's whole email into the firm's AI assistant. Forty seconds later it hands you four confident paragraphs and three citations. It reads like a treatise. You have no idea whether it is right.",
   choices:[
    {label:"Forward the AI answer to the partner as written. It's polished, and it's 11:15.", risk:3, prod:2, verdict:"bad",
@@ -132,37 +235,138 @@ const SCENES = [
  },
  {
   id:"payment", time:"12:00 PM", module:"Professional Communications",
-  from:"Front Desk", addr:"reception@boudreaux-chen-payables.example",
+  from:"Front Desk", addr:"reception@monroe-delacroix-payables.example",
   subject:"ACTION NEEDED: payment approval before noon",
   issue:"Email security, phishing and social engineering; internal financial controls",
-  body:[
-   "Hi! One vendor invoice needs a second approver today. Just click the button and sign in with your normal firm username and password. Takes 10 seconds. You're a lifesaver.",
-  ],
+  body:["Hi! One vendor invoice needs a second approver today. Just click the button and sign in with your normal firm username and password. Takes 10 seconds. You're a lifesaver."],
   fakebtn:"APPROVE PAYMENT",
-  narr:"Your computer beeps. The front desk usually emails you about meeting requests, not payments. Still, it is flattering that the firm trusts you with payables. The sign-in page wants the same password you used to log in to your PC this morning.",
+  narr:"Your computer beeps. The front desk usually emails you about callers, not payments. Still, it is flattering that the firm trusts you with payables. The sign-in page wants the same password you used to log in to your PC this morning.",
   choices:[
    {label:"Click the green button, type your username and password, and get back to work.", risk:4, prod:1, verdict:"bad",
-    result:"The page says \"Thank you!\" and closes. By 12:30 your mailbox is sending the same message to every client in your contacts, and somebody in another time zone is reading the partner's email from Scene 1."},
+    result:"The page says \"Thank you!\" and closes. By 12:30 your mailbox is sending the same message to every client in your contacts, and somebody in another time zone is reading the partner's servitude email."},
    {label:"Delete it. Obviously fake. Say nothing, because you're busy.", risk:1, prod:1, verdict:"mixed",
     result:"You are safe. The same email is sitting in eleven other inboxes, and the new paralegal thinks it is flattering that the firm trusts him with payables."},
    {label:"Don't click. Check the sender's address, call the front desk at the extension you already know, and report the message to IT.", risk:0, prod:3, verdict:"good",
-    result:"The address was boudreaux-chen-payables, not the firm's domain. The front desk sent nothing. IT blocks the sender and warns the whole firm within five minutes. It cost you one phone call."}
+    result:"The address was monroe-delacroix-payables, not the firm's own domain. The front desk sent nothing. Pelican Office Systems blocks the sender and warns the whole firm within five minutes. It cost you one phone call."}
   ],
   debrief:{
    ethics:"If the password had been stolen, whose information is exposed, and what would the firm owe its clients?",
    process:"Should one click from one person ever be enough to approve a payment? What control is missing?",
-   tech:"Which protections from the security module would have limited the damage even after a wrong click?"
+   tech:"What in the message itself would have told you where it really came from?"
+  }
+ },
+ {
+  id:"mfa", time:"1:30 PM", module:"Securing Your Practice",
+  from:"Your phone", addr:"buzzing face-down on the desk",
+  subject:"Approve sign-in? Approve sign-in? Approve sign-in?",
+  issue:"Account security: passwords and second factors",
+  body:["Someone is trying to sign in to your firm account. Location: not Baton Rouge. Tap APPROVE if this is you."],
+  narr:"It is not you. You are eating a sandwich. The phone buzzes a fourth time. It is extremely annoying.",
+  choices:[
+   {label:"Tap Approve so it stops buzzing.", risk:4, prod:1, verdict:"bad",
+    result:"It stops buzzing. That is because the person in not-Baton-Rouge is now signed in as you. The second factor did its job perfectly. You were the part that failed."},
+   {label:"Tap Deny. Then change your password to a new one generated by your password manager and used nowhere else, and tell Pelican Office Systems what happened.", risk:0, prod:3, verdict:"good",
+    result:"Someone had your password, and now they have a password that opens nothing. IT finds the same attempts against two other accounts and resets those too. Four minutes, including the sandwich."},
+   {label:"Tap Deny each time and get back to work. The system is clearly doing its job.", risk:1, prod:1, verdict:"mixed",
+    result:"It is doing its job. But a prompt only appears after the password is right, so somebody has your password. They will try again at 3:00 a.m., when you are asleep and your thumb is less careful."}
+  ],
+  debrief:{
+   ethics:"What counts as reasonable security for a lawyer's account? Reasonable, not invulnerable.",
+   process:"Who needs to hear about a near miss, and how fast?",
+   tech:"Which second factor is weakest, and which is strongest?"
+  }
+ },
+ {
+  id:"template", time:"2:15 PM", module:"Document Automation and Management",
+  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
+  subject:"Engagement letter for the new client by 3:00",
+  issue:"Document reuse, templates and metadata",
+  body:["A new client is coming at 3:00. I need an engagement letter to email her beforehand. It's basically the same as the one we did for Marie Boudreaux's custody matter. Shouldn't take long!"],
+  narr:"The Boudreaux letter is right there in the client folder. The firm's engagement-letter template is also right there, one folder up, looking neglected.",
+  choices:[
+   {label:"Open the Boudreaux letter, type the new client's name over the old one, Save As, and email the Word file.", risk:3, prod:1, verdict:"bad",
+    result:"The letter looks perfect. Its document properties still say \"Boudreaux, Marie, Custody Modification,\" and so do the tracked changes. The new client's first experience of the firm is reading another client's business."},
+   {label:"Start from the firm's engagement-letter template, fill in the fields, run Inspect Document on a copy, and send it as a PDF.", risk:0, prod:3, verdict:"good",
+    result:"Eight minutes. The letter has the right client, the right matter number, and nothing in it that anyone typed for anyone else. The template did the formatting."},
+   {label:"Retype the whole letter into a blank document, to be safe.", risk:0, prod:0, verdict:"mixed",
+    result:"Fifty minutes of typing, formatted by hand with the space bar. It carries nobody else's information. It does carry a new typo in the fee paragraph, which the client spots immediately."}
+  ],
+  debrief:{
+   ethics:"What does a document say about a client that is not visible on the page?",
+   process:"Why does a firm keep templates instead of reusing the last letter?",
+   tech:"What did Inspect Document find in your own file this semester?"
+  }
+ },
+ {
+  id:"redact", time:"3:30 PM", module:"E-Filing and Litigation",
+  from:"Camille Thibodeaux", addr:"cthibodeaux@monroedelacroix.example",
+  subject:"Fontenot exhibit must be e-filed today",
+  issue:"Redaction before filing",
+  body:["The exhibit in the Fontenot child support matter has to be filed before the clerk's cutoff. It has a Social Security number, a bank account number, a date of birth, and the child's name on it. Please redact and file. I'm in a deposition until 5."],
+  narr:"The PDF is open. The highlighter tool can be set to black. A black marker sits in your pen cup. The Redact tool is under a menu you have opened exactly once, in a class.",
+  choices:[
+   {label:"Print it, black out the sensitive parts with the marker, scan it, and file the scan.", risk:1, prod:0, verdict:"mixed",
+    result:"It mostly works. The file is many times larger and no longer searchable, the clerk's system takes three tries to accept it, and the marker missed the fifth \"Josephine,\" on page 2."},
+   {label:"Draw black boxes over the sensitive parts in the PDF and file it. Black is black.", risk:4, prod:1, verdict:"bad",
+    result:"Opposing counsel's paralegal presses Select All, Copy, Paste. Everything under the boxes arrives in a new document, including the account number. The filing is public."},
+   {label:"Work on a copy, never the original. Use the Redact tool: mark, apply, sanitize. Then test it the way an opponent would: search for the name and try to copy and paste.", risk:0, prod:3, verdict:"good",
+    result:"The search for \"Josephine\" finds nothing. Copy and paste brings back nothing. The original is untouched in the client folder. Filed at 3:50, well ahead of the cutoff."}
+  ],
+  debrief:{
+   ethics:"Who is harmed when a redaction fails, and can a public filing be taken back?",
+   process:"Why redact a copy, and why test before filing?",
+   tech:"What is the difference between hiding information and removing it?"
+  }
+ },
+ {
+  id:"closedfile", time:"4:45 PM", module:"Closing Files",
+  from:"Front Desk", addr:"reception@monroedelacroix.example",
+  subject:"Former client on line 1, needs something from her 2017 file",
+  issue:"Closed files: retention, retrieval and who owns what",
+  body:["A former client says the firm handled a matter for her in 2017 and she needs a copy of a signed document from it for a closing tomorrow morning. She is very polite and very worried."],
+  narr:"You were in college in 2017. You have no idea where a nine-year-old file would be, whether the firm still has it, or whether it is hers or the firm's.",
+  choices:[
+   {label:"Tell her that files that old have surely been destroyed, and wish her luck.", risk:2, prod:1, verdict:"bad",
+    result:"The file was not destroyed. It was sitting in the Closed Matters folder the whole time, and part of it was hers. She learns this after her closing falls through."},
+   {label:"Look up the matter's closing record: what went back to the client, what the firm kept, where it is stored, and when it is due to be destroyed. Retrieve the document from the read-only closed-matters folder.", risk:0, prod:3, verdict:"good",
+    result:"The closing checklist from 2017 answers every question in one page. The signed document is in the closed-matters folder in a format that still opens. She has it in ten minutes."},
+   {label:"Search every drive and old mailbox you can reach, and send her whatever turns up with her name on it.", risk:1, prod:0, verdict:"mixed",
+    result:"After an hour you find \"Agreement FINAL final v3.wpd.\" Nothing on your computer can open it, and you cannot tell whether it is the signed version or a draft. You send it anyway, with a hopeful note."}
+  ],
+  debrief:{
+   ethics:"Which parts of a closed file belong to the client?",
+   process:"What should happen on the day a matter closes so that this call is easy nine years later?",
+   tech:"Will the files you save today still open in nine years? What would make sure?"
+  }
+ },
+ {
+  id:"continuity", time:"5:20 PM", module:"Closing Practices",
+  from:"Camille Thibodeaux", addr:"cthibodeaux@monroedelacroix.example",
+  subject:"Odette is in the hospital",
+  issue:"Continuity: when a lawyer is suddenly unavailable",
+  body:["Odette's husband just called. She was taken to the hospital an hour ago. She will be fine, but she is unreachable for at least 72 hours. She has a hearing at 9:00 tomorrow. Her calendar, her files and her passwords are all hers. What do we do?"],
+  narr:"Her office door is open. Her laptop is locked. Everyone knows she has a dog named Beignet.",
+  choices:[
+   {label:"Try to get into her laptop. The password is probably Beignet and a year.", risk:3, prod:1, verdict:"bad",
+    result:"It is not Beignet2026. It is not Beignet2025 either. On the fifth try the account locks, and now nobody can get in, including IT, until Friday."},
+   {label:"Open the firm's continuity binder: who covers her matters, where her calendar and files are, and how emergency access to her accounts works. Then call the covering lawyer and the client.", risk:0, prod:3, verdict:"good",
+    result:"The binder names her backup, who has the hearing file by 5:45. The client hears it from the firm before hearing it from anyone else. Nobody guessed a password."},
+   {label:"Call and text her husband until he can ask her for her passwords.", risk:1, prod:0, verdict:"mixed",
+    result:"He does not answer, because he is at a hospital. When he finally does, at 10:00 p.m., he reads you a password over the phone from memory, with one character wrong."}
+  ],
+  debrief:{
+   ethics:"What do a lawyer's clients have a right to expect if the lawyer is suddenly gone?",
+   process:"What belongs in a continuity plan, and who needs to know where it is?",
+   tech:"Where does the password to the plan itself live?"
   }
  },
  {
   id:"timesheet", time:"5:55 PM", module:"Time, Billing, and Accounting",
-  from:"Billing Department", addr:"billing@boudreauxchen.example",
+  from:"Billing Department", addr:"billing@monroedelacroix.example",
   subject:"Timesheets close at 6:00. No exceptions. We mean it this time.",
   issue:"Time-keeping and accurate billing of the client; time management",
-  body:[
-   "Friendly reminder that today's time entries are due in five minutes. Please enter your time for each matter you worked on.",
-  ],
-  narr:"You never started a timer today. The partner's research question took up a good part of your day, but when did it start: when you opened her email, or when you opened the research app? You also broke off for the payment email and came back. Your honest guess is somewhere between one and a half and three hours.",
+  body:["Friendly reminder that today's time entries are due in five minutes. Please enter your time for each matter you worked on."],
+  narr:"You never started a timer today. The partner's servitude question took up a good part of your day, but when did it start: when you opened her email, or when you opened the research app? You also broke off for the payment email and came back. Your honest guess is somewhere between one and a half and three hours.",
   choices:[
    {label:"Enter 3.0 hours on the client's matter. Round up. You were probably thinking about it at lunch.", risk:3, prod:1, verdict:"bad",
     result:"The client is now paying for the payment email, your lunch, and a generous margin of error. This client audits its bills. The audit asks what happened between 12:00 and 12:20."},
@@ -225,8 +429,8 @@ function renderTitle(){
     <div class="window">
       <div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Welcome to ${esc(FIRM)}</div>
       <div class="pad">
-        <h1>A Day at Boudreaux &amp; Chen</h1>
-        <p>You are a second-year associate. Things will land on your desk all day. For each one, your team picks what to do.</p>
+        <h1>A Day at Monroe &amp; Delacroix</h1>
+        <p>You are a second-year associate. Thirteen things will land on your desk between 8:00 and 6:00. For each one, your team picks what to do.</p>
         <p>Every choice moves two meters: <b>Malpractice risk</b> and <b>Productivity</b>. Fast is not always safe, and safe is not always slow. At 6:00 the firm's malpractice carrier files its report on you.</p>
         <h3>Your team name</h3>
         <div class="name" id="nm" aria-live="polite">${esc(name)}</div>
@@ -243,7 +447,7 @@ function renderTitle(){
 }
 
 function barHTML(clock){
-  const maxRisk = 10, maxProd = 10;
+  const maxRisk = SCENES.reduce((t,x)=>t+Math.max(...x.choices.map(c=>c.risk)),0), maxProd = SCENES.reduce((t,x)=>t+Math.max(...x.choices.map(c=>c.prod)),0);
   return `
   <div class="bar">
     <span class="firm">${esc(FIRM)}</span>
@@ -357,8 +561,8 @@ function submitTimesheet(sc){
 
 function renderReport(){
   const sc = score();
-  const rating = sc>=170 ? "Policy renewed at the standard premium. The underwriter sends her regards."
-              : sc>=110 ? "Policy renewed, with a strongly worded letter."
+  const rating = sc>=400 ? "Policy renewed at the standard premium. The underwriter sends her regards."
+              : sc>=250 ? "Policy renewed, with a strongly worded letter."
               : "Please call us. Today. Before you open any more email.";
   app.innerHTML = barHTML("6:00 PM") + `
   <div class="window report"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Bayou Mutual Professional Liability — Insured's Daily Report</div>
