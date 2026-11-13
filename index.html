@@ -1,0 +1,394 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A Day at Boudreaux &amp; Chen</title>
+<style>
+  :root{
+    --ink:#1d1a2b; --muted:#5d5a70; --paper:#fffdf7; --desk:#2b2350; --desk2:#463a7a;
+    --gold:#f5c542; --line:#d9d4c4; --good:#1f7a4d; --mixed:#9a6400; --bad:#b3261e;
+    --accent:#461d7c;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);
+    background:linear-gradient(160deg,var(--desk),var(--desk2));min-height:100vh;font-size:17px;line-height:1.5}
+  button{font:inherit;cursor:pointer}
+  button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  .wrap{max-width:1060px;margin:0 auto;padding:16px}
+
+  /* top bar */
+  .bar{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;background:#17122e;color:#fff;
+    border-radius:12px;padding:10px 16px;margin-bottom:14px}
+  .bar .firm{font-weight:700}
+  .bar .team{color:var(--gold);font-weight:600}
+  .clock{font-variant-numeric:tabular-nums;font-weight:700;background:#000;border-radius:8px;padding:2px 10px;color:#7CFFB2}
+  .meter{display:flex;align-items:center;gap:6px;font-size:14px}
+  .meter .track{display:inline-block;width:110px;height:12px;background:#3a335c;border-radius:6px;overflow:hidden}
+  .meter .fill{display:block;height:100%;width:0;transition:width .5s}
+  #riskFill{background:#ff6b5e} #prodFill{background:#5fd68f}
+  .score{margin-left:auto;font-size:22px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums}
+  .net{font-size:12px;color:#b9b4d6}
+
+  /* windows */
+  .window{background:var(--paper);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.35);overflow:hidden}
+  .titlebar{background:#e9e4d4;border-bottom:1px solid var(--line);padding:8px 14px;font-weight:600;font-size:14px;color:var(--muted);
+    display:flex;gap:8px;align-items:center}
+  .dots{display:inline-flex;gap:5px}.dots i{width:10px;height:10px;border-radius:50%;background:#c9c3b0;display:inline-block}
+  .pad{padding:20px 22px}
+  .grid{display:grid;grid-template-columns:260px 1fr;gap:14px}
+  @media (max-width:760px){.grid{grid-template-columns:1fr}.score{margin-left:0}}
+
+  .inbox{list-style:none;margin:0;padding:0}
+  .inbox li{padding:10px 14px;border-bottom:1px solid var(--line);font-size:14px}
+  .inbox li.current{background:#fff3c9;font-weight:700}
+  .inbox li.done{color:var(--muted)}
+  .inbox li.locked{color:#aaa49a;font-style:italic}
+  .inbox .t{display:block;font-size:12px;color:var(--muted);font-weight:400}
+
+  .mailhead{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;font-size:15px}
+  .mailhead b{display:inline-block;min-width:70px;color:var(--muted);font-weight:600}
+  h1{font-size:34px;margin:0 0 6px} h2{font-size:22px;margin:0 0 10px} h3{font-size:17px;margin:18px 0 6px}
+  .narr{background:#f3efe2;border-left:4px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
+  .fakebtn{display:inline-block;background:#1f9d55;color:#fff;font-weight:700;border-radius:6px;padding:8px 22px;margin:6px 0}
+
+  .choices{display:grid;gap:10px;margin-top:16px}
+  .choice{text-align:left;background:#fff;border:2px solid var(--accent);border-radius:10px;padding:12px 16px;color:var(--ink)}
+  .choice:hover{background:#f1eaff}
+  .choice b{color:var(--accent)}
+  .primary{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:12px 22px;font-weight:700}
+  .primary:hover{background:#5d2aa3}
+  .ghost{background:transparent;border:2px solid var(--accent);color:var(--accent);border-radius:10px;padding:10px 18px;font-weight:600}
+
+  .result{border-radius:10px;padding:14px 18px;margin:8px 0 16px;border:2px solid}
+  .result.good{border-color:var(--good);background:#e9f7ef}
+  .result.mixed{border-color:var(--mixed);background:#fff6e0}
+  .result.bad{border-color:var(--bad);background:#fdecea}
+  .tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
+  .good .tag{color:var(--good)} .mixed .tag{color:var(--mixed)} .bad .tag{color:var(--bad)}
+  .delta{font-weight:700;font-variant-numeric:tabular-nums}
+
+  /* title */
+  .hero{max-width:680px;margin:6vh auto 0;text-align:center}
+  .hero .window{text-align:left}
+  .name{font-size:26px;font-weight:800;color:var(--accent);margin:8px 0 14px}
+  .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+
+  /* timesheet */
+  .slider{margin:14px 0}
+  .slider label{display:block;font-weight:600}
+  .slider input{width:100%}
+  .slider output{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
+
+  /* report */
+  .report h2{border-bottom:2px solid var(--ink);padding-bottom:6px}
+  .big{font-size:64px;font-weight:900;color:var(--accent);line-height:1;font-variant-numeric:tabular-nums}
+  .item{border-top:1px solid var(--line);padding:14px 0}
+  .item .issue{font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+  .tripod{margin:8px 0 0;padding-left:20px}
+  .tripod li{margin:3px 0}
+  .small{font-size:13px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ---------- configuration ---------- */
+const SB_URL = "https://tsbfzpivjuiqcanqbyyy.supabase.co";
+const SB_KEY = "sb_publishable_4_GsvO9WQugPMzsW90_dHw_O0go6RZv";
+const FIRM = "Boudreaux & Chen, LLC";
+const STORE = "law5622-day-v1";
+
+/* Team names come only from these lists, so no student name can reach the leaderboard. */
+const ADJ = ["Billable","Redacted","Privileged","Encrypted","Unmuted","Overruled","Sustained","Caffeinated","Verified","Paperless","Diligent","Reasonable","Docketed","Notarized"];
+const NOUN = ["Pelicans","Crawfish","Gators","Egrets","Footnotes","Macros","Captions","Deadlines","Timesheets","Passwords","Herons","Hyperlinks","Exhibits","Templates"];
+
+/* ---------- scenes ---------- */
+const SCENES = [
+ {
+  id:"research", time:"11:15 AM", module:"Legal Research",
+  from:"Marguerite Boudreaux", addr:"mboudreaux@boudreauxchen.example",
+  subject:"Quick question (it is not quick)",
+  issue:"AI as a research tool, in an area where the lawyer isn't proficient",
+  body:[
+   "I need an answer on the servitude question before my 2:00 client call. You've been doing this for a year now, so I assume it's easy. Thanks!!",
+  ],
+  narr:"The question is esoteric. You try two natural-language searches and trust neither result. So you paste the partner's whole email into the firm's AI assistant. Forty seconds later it hands you four confident paragraphs and three citations. It reads like a treatise. You have no idea whether it is right.",
+  choices:[
+   {label:"Forward the AI answer to the partner as written. It's polished, and it's 11:15.", risk:3, prod:2, verdict:"bad",
+    result:"The partner reads it to the client at 2:00, nearly word for word. At 2:20 the client's in-house counsel asks for a copy of the second case. Nobody can find the second case. Nobody will ever find the second case."},
+   {label:"Close the AI window, ignore what it said, and research the question from scratch in the treatises.", risk:0, prod:0, verdict:"mixed",
+    result:"Your answer is correct, careful, and finished at 4:30. The call was at 2:00. The partner improvised. You also billed three hours for something that had a faster safe route."},
+   {label:"Treat the AI answer as a map. Pull every cited authority in the research database, confirm each one exists and says what the AI claims, then tell the partner what is verified and what is still uncertain.", risk:0, prod:3, verdict:"good",
+    result:"Two citations check out. The third is real but stands for the opposite point, which you flag. The partner goes into the call at 2:00 knowing exactly how far the answer can be trusted."}
+  ],
+  debrief:{
+   ethics:"Competence includes knowing the limits of the tool and of your own knowledge. Also: what client facts were in the email you pasted into the AI, and where did they go?",
+   process:"What does this firm's research workflow say about verifying AI output before it reaches a partner or a client?",
+   tech:"Which tool was this: a general chatbot or the research platform's own AI? Does the answer change?"
+  }
+ },
+ {
+  id:"payment", time:"12:00 PM", module:"Professional Communications",
+  from:"Front Desk", addr:"reception@boudreaux-chen-payables.example",
+  subject:"ACTION NEEDED: payment approval before noon",
+  issue:"Email security, phishing and social engineering; internal financial controls",
+  body:[
+   "Hi! One vendor invoice needs a second approver today. Just click the button and sign in with your normal firm username and password. Takes 10 seconds. You're a lifesaver.",
+  ],
+  fakebtn:"APPROVE PAYMENT",
+  narr:"Your computer beeps. The front desk usually emails you about meeting requests, not payments. Still, it is flattering that the firm trusts you with payables. The sign-in page wants the same password you used to log in to your PC this morning.",
+  choices:[
+   {label:"Click the green button, type your username and password, and get back to work.", risk:4, prod:1, verdict:"bad",
+    result:"The page says \"Thank you!\" and closes. By 12:30 your mailbox is sending the same message to every client in your contacts, and somebody in another time zone is reading the partner's email from Scene 1."},
+   {label:"Delete it. Obviously fake. Say nothing, because you're busy.", risk:1, prod:1, verdict:"mixed",
+    result:"You are safe. The same email is sitting in eleven other inboxes, and the new paralegal thinks it is flattering that the firm trusts him with payables."},
+   {label:"Don't click. Check the sender's address, call the front desk at the extension you already know, and report the message to IT.", risk:0, prod:3, verdict:"good",
+    result:"The address was boudreaux-chen-payables, not the firm's domain. The front desk sent nothing. IT blocks the sender and warns the whole firm within five minutes. It cost you one phone call."}
+  ],
+  debrief:{
+   ethics:"If the password had been stolen, whose information is exposed, and what would the firm owe its clients?",
+   process:"Should one click from one person ever be enough to approve a payment? What control is missing?",
+   tech:"Which protections from the security module would have limited the damage even after a wrong click?"
+  }
+ },
+ {
+  id:"timesheet", time:"5:55 PM", module:"Time, Billing, and Accounting",
+  from:"Billing Department", addr:"billing@boudreauxchen.example",
+  subject:"Timesheets close at 6:00. No exceptions. We mean it this time.",
+  issue:"Time-keeping and accurate billing of the client; time management",
+  body:[
+   "Friendly reminder that today's time entries are due in five minutes. Please enter your time for each matter you worked on.",
+  ],
+  narr:"You never started a timer today. The partner's research question took up a good part of your day, but when did it start: when you opened her email, or when you opened the research app? You also broke off for the payment email and came back. Your honest guess is somewhere between one and a half and three hours.",
+  choices:[
+   {label:"Enter 3.0 hours on the client's matter. Round up. You were probably thinking about it at lunch.", risk:3, prod:1, verdict:"bad",
+    result:"The client is now paying for the payment email, your lunch, and a generous margin of error. This client audits its bills. The audit asks what happened between 12:00 and 12:20."},
+   {label:"Enter 1.0 hour to be safe. Nobody has ever complained about a small bill.", risk:0, prod:0, verdict:"mixed",
+    result:"It is honest, in the sense that you worked at least that long. The firm gave away the rest, and next year's estimate for this kind of work will be built on a number that was never true."},
+   {label:"Rebuild the time from records: when the partner's email arrived, your research history, the AI chat's timestamps, and when you reported the payment email. Subtract the interruption, enter the result with a clear description, and start a timer tomorrow.", risk:0, prod:3, verdict:"good",
+    result:"It takes six minutes and comes to 1.8 hours. The entry would survive an audit. Tomorrow a timer does all of this for you."}
+  ],
+  debrief:{
+   ethics:"A fee has to be reasonable and the bill has to be true. What happens to a guess that runs high?",
+   process:"When does the clock start and stop on a task? Who decides, and is it written down?",
+   tech:"What would have recorded this for you while you worked?"
+  }
+ }
+];
+const TIMED = ["research","payment"];           // scenes the timesheet asks about
+const TIMED_LABEL = {research:"the partner's research question", payment:"the payment-approval email"};
+
+/* ---------- state ---------- */
+let S = load() || fresh();
+let sceneStart = Date.now();
+let pending = null;      // result being shown before "back to work"
+
+function fresh(){ return {team:"", idx:0, risk:0, prod:0, log:[], secs:{}, done:false}; }
+function load(){ try{ return JSON.parse(localStorage.getItem(STORE)); }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
+function score(){ return Math.max(0, 100 + 10*S.prod - 15*S.risk); }
+function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+function randomName(){ return "The " + pick(ADJ) + " " + pick(NOUN); }
+function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function mmss(s){ s=Math.round(s); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+
+/* ---------- leaderboard ---------- */
+let netOK = null;
+function post(){
+  if(!S.team) return;
+  const body = {team:S.team, score:score(), scene:S.done?99:S.idx, updated_at:new Date().toISOString()};
+  fetch(SB_URL+"/rest/v1/scores?on_conflict=team", {
+    method:"POST",
+    headers:{apikey:SB_KEY,"Content-Type":"application/json",Prefer:"resolution=merge-duplicates,return=minimal"},
+    body:JSON.stringify(body)
+  }).then(r=>{netOK=r.ok;}).catch(()=>{netOK=false;}).finally(()=>{
+    const n=document.getElementById("net"); if(n) n.textContent = netOK ? "Leaderboard: connected" : "Leaderboard: offline (keep playing)";
+  });
+}
+
+/* ---------- rendering ---------- */
+const app = document.getElementById("app");
+
+function render(){
+  if(!S.team) return renderTitle();
+  if(S.done) return renderReport();
+  renderDesk();
+}
+
+function renderTitle(){
+  let name = randomName();
+  app.innerHTML = `
+  <div class="hero">
+    <div class="window">
+      <div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Welcome to ${esc(FIRM)}</div>
+      <div class="pad">
+        <h1>A Day at Boudreaux &amp; Chen</h1>
+        <p>You are a second-year associate. Things will land on your desk all day. For each one, your team picks what to do.</p>
+        <p>Every choice moves two meters: <b>Malpractice risk</b> and <b>Productivity</b>. Fast is not always safe, and safe is not always slow. At 6:00 the firm's malpractice carrier files its report on you.</p>
+        <h3>Your team name</h3>
+        <div class="name" id="nm" aria-live="polite">${esc(name)}</div>
+        <div class="row">
+          <button class="ghost" id="shuffle">Shuffle name</button>
+          <button class="primary" id="go">Start the day</button>
+        </div>
+        <p class="small">Names are drawn from a preset list. Your team's score appears on the class leaderboard under this name.</p>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("shuffle").onclick = ()=>{ name = randomName(); document.getElementById("nm").textContent = name; };
+  document.getElementById("go").onclick = ()=>{ S = fresh(); S.team = name; save(); post(); sceneStart = Date.now(); render(); };
+}
+
+function barHTML(clock){
+  const maxRisk = 10, maxProd = 10;
+  return `
+  <div class="bar">
+    <span class="firm">${esc(FIRM)}</span>
+    <span class="team">${esc(S.team)}</span>
+    <span class="clock" aria-label="Time of day">${esc(clock)}</span>
+    <span class="meter">Risk <span class="track"><span class="fill" id="riskFill" style="width:${Math.min(100,S.risk/maxRisk*100)}%"></span></span></span>
+    <span class="meter">Productivity <span class="track"><span class="fill" id="prodFill" style="width:${Math.max(0,Math.min(100,S.prod/maxProd*100))}%"></span></span></span>
+    <span class="score" aria-label="Score">${score()}</span>
+    <span class="net" id="net">${netOK===false?"Leaderboard: offline (keep playing)":"Leaderboard: connected"}</span>
+  </div>`;
+}
+
+function inboxHTML(){
+  return `<ul class="inbox">` + SCENES.map((sc,i)=>{
+    const cls = i<S.idx ? "done" : i===S.idx ? "current" : "locked";
+    const label = i<=S.idx ? esc(sc.subject) : "Not yet arrived";
+    const who = i<=S.idx ? esc(sc.from) : "";
+    return `<li class="${cls}"><span class="t">${esc(sc.time)}${who?" · "+who:""}</span>${i<S.idx?"✓ ":""}${label}</li>`;
+  }).join("") + `</ul>`;
+}
+
+function mailHTML(sc){
+  return `
+    <div class="mailhead">
+      <div><b>From</b> ${esc(sc.from)} &lt;${esc(sc.addr)}&gt;</div>
+      <div><b>Subject</b> ${esc(sc.subject)}</div>
+    </div>
+    ${sc.body.map(p=>`<p>${esc(p)}</p>`).join("")}
+    ${sc.fakebtn?`<div><span class="fakebtn" aria-hidden="true">${esc(sc.fakebtn)}</span></div>`:""}
+    <div class="narr">${esc(sc.narr)}</div>`;
+}
+
+function renderDesk(){
+  const sc = SCENES[S.idx];
+  let main;
+  if(pending){
+    main = `
+      <div class="result ${pending.verdict}" role="status">
+        <div class="tag">${pending.verdict==="good"?"Well handled":pending.verdict==="mixed"?"Could be worse":"Oh no"}</div>
+        <div>${esc(pending.result)}</div>
+        <p class="delta">Risk ${pending.risk>0?"+":""}${pending.risk} · Productivity ${pending.prod>0?"+":""}${pending.prod}</p>
+      </div>
+      <button class="primary" id="next">${S.idx+1<SCENES.length?"Back to work":"Go home and read the carrier's report"}</button>`;
+  } else if(sc.type==="timesheet"){
+    main = mailHTML(sc) + `<h3>Guess how long your team really took</h3>
+      <p>For each email below, drag the slider to your best guess of the real time, in minutes and seconds, from the moment the email appeared until your team clicked an answer. Close guesses score. A guess that runs high counts as overbilling the client.</p>` + TIMED.map(id=>`
+      <div class="slider">
+        <label for="g_${id}">Real time your team spent on ${esc(TIMED_LABEL[id])}: <output id="o_${id}">0:00</output> <span class="small">(minutes:seconds)</span></label>
+        <input type="range" id="g_${id}" min="0" max="600" step="5" value="0">
+      </div>`).join("") + `<button class="primary" id="submitTime">Submit timesheet</button>`;
+  } else {
+    main = mailHTML(sc) + `<h3>What does your team do?</h3><div class="choices">` +
+      orderFor(sc).map((ci,pos)=>`<button class="choice" data-i="${ci}"><b>${"ABC"[pos]}.</b> ${esc(sc.choices[ci].label)}</button>`).join("") + `</div>`;
+  }
+  app.innerHTML = barHTML(sc.time) + `
+  <div class="grid">
+    <div class="window"><div class="titlebar">Inbox</div>${inboxHTML()}</div>
+    <div class="window"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> ${esc(sc.module)}</div><div class="pad">${main}</div></div>
+  </div>`;
+
+  if(pending){
+    document.getElementById("next").onclick = ()=>{
+      pending = null; S.idx++; if(S.idx>=SCENES.length){ S.done = true; }
+      save(); post(); sceneStart = Date.now(); render(); window.scrollTo(0,0);
+    };
+    document.getElementById("next").focus();
+  } else if(sc.type==="timesheet"){
+    TIMED.forEach(id=>{
+      const inp=document.getElementById("g_"+id), out=document.getElementById("o_"+id);
+      inp.oninput = ()=>{ out.textContent = mmss(+inp.value); };
+    });
+    document.getElementById("submitTime").onclick = ()=>submitTimesheet(sc);
+  } else {
+    app.querySelectorAll(".choice").forEach(b=>b.onclick = ()=>choose(sc, +b.dataset.i));
+  }
+}
+
+/* Choices appear in a random order so the best answer is not always in the same spot. */
+const ORDER = {};
+function orderFor(sc){
+  if(!ORDER[sc.id]){ const a=sc.choices.map((_,i)=>i); for(let k=a.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1)); [a[k],a[r]]=[a[r],a[k]];} ORDER[sc.id]=a; }
+  return ORDER[sc.id];
+}
+function choose(sc, i){
+  const c = sc.choices[i];
+  S.secs[sc.id] = (Date.now()-sceneStart)/1000;
+  S.risk += c.risk; S.prod += c.prod;
+  S.log.push({id:sc.id, label:c.label, verdict:c.verdict});
+  pending = {verdict:c.verdict, result:c.result, risk:c.risk, prod:c.prod};
+  save(); render();
+}
+
+function submitTimesheet(sc){
+  let risk=0, prod=0, lines=[], over=false, allGood=true;
+  TIMED.forEach(id=>{
+    const actual = S.secs[id] || 0, guess = +document.getElementById("g_"+id).value;
+    const diff = Math.abs(guess-actual);
+    let verdict;
+    if(diff<=15 || diff<=actual*0.25){ prod+=2; verdict="accurate"; }
+    else if(guess>actual){ risk+=2; over=true; allGood=false; verdict="too high: the client pays for time nobody worked"; }
+    else { allGood=false; verdict="too low: the firm worked for free"; }
+    lines.push(`${TIMED_LABEL[id][0].toUpperCase()+TIMED_LABEL[id].slice(1)}: you entered ${mmss(guess)}, the game clocked ${mmss(actual)} (${verdict})`);
+  });
+  const verdict = allGood ? "good" : over ? "bad" : "mixed";
+  const result = "The game was timing you all day. " + lines.join(". ") + ".";
+  S.risk += risk; S.prod += prod;
+  S.log.push({id:sc.id, label:"Reconstructed the day from memory. "+lines.join(". ")+".", verdict});
+  pending = {verdict, result, risk, prod};
+  save(); render();
+}
+
+function renderReport(){
+  const sc = score();
+  const rating = sc>=170 ? "Policy renewed at the standard premium. The underwriter sends her regards."
+              : sc>=110 ? "Policy renewed, with a strongly worded letter."
+              : "Please call us. Today. Before you open any more email.";
+  app.innerHTML = barHTML("6:00 PM") + `
+  <div class="window report"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Bayou Mutual Professional Liability — Insured's Daily Report</div>
+   <div class="pad">
+    <h2>Carrier's report on ${esc(S.team)}</h2>
+    <div class="row" style="gap:24px;align-items:flex-end">
+      <div><div class="small">FINAL SCORE</div><div class="big">${sc}</div></div>
+      <div><b>${esc(rating)}</b><br><span class="small">Risk ${S.risk} · Productivity ${S.prod}</span></div>
+    </div>
+    <p>Hold on to this page. The questions under each item are for the class discussion.</p>
+    ${SCENES.map(scn=>{
+      const e = S.log.find(l=>l.id===scn.id) || {label:"",verdict:"mixed"};
+      return `<div class="item">
+        <div class="issue">${esc(scn.time)} · ${esc(scn.issue)}</div>
+        <div class="result ${e.verdict}" style="margin:8px 0"><span class="tag">${e.verdict==="good"?"Well handled":e.verdict==="mixed"?"Could be worse":"Claim pending"}</span><div>${esc(e.label)}</div></div>
+        <ul class="tripod">
+          <li><b>Ethics:</b> ${esc(scn.debrief.ethics)}</li>
+          <li><b>Process:</b> ${esc(scn.debrief.process)}</li>
+          <li><b>Technology:</b> ${esc(scn.debrief.tech)}</li>
+        </ul></div>`;
+    }).join("")}
+    <p style="margin-top:20px"><button class="ghost" id="again">Start over with a new team name</button></p>
+   </div></div>`;
+  document.getElementById("again").onclick = ()=>{
+    if(confirm("Start a new day? This team's score stays on the leaderboard.")){ S = fresh(); save(); render(); }
+  };
+}
+
+render();
+if(S.team) post();
+</script>
+</body>
+</html>
