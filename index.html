@@ -15,7 +15,7 @@
   body{font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;color:var(--ink);
     background:linear-gradient(160deg,var(--desk),var(--desk2));min-height:100vh;font-size:17px;line-height:1.5}
   button{font:inherit;cursor:pointer}
-  button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+  button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
   .wrap{max-width:1060px;margin:0 auto;padding:16px}
 
   /* top bar */
@@ -44,14 +44,15 @@
   .inbox li{padding:10px 14px;border-bottom:1px solid var(--line);font-size:14px}
   .inbox li.current{background:#fff3c9;font-weight:700}
   .inbox li.done{color:var(--muted)}
-  .inbox li.locked{color:#aaa49a;font-style:italic}
+  .inbox li.locked{color:#77726a;font-style:italic}
   .inbox .t{display:block;font-size:12px;color:var(--muted);font-weight:400}
 
   .mailhead{border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:14px;font-size:15px}
   .mailhead b{display:inline-block;min-width:70px;color:var(--muted);font-weight:600}
   h1{font-size:34px;margin:0 0 6px} h2{font-size:22px;margin:0 0 10px} h3{font-size:17px;margin:18px 0 6px}
   .narr{background:#f3efe2;border-left:4px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:14px 0}
-  .fakebtn{display:inline-block;background:#1f9d55;color:#fff;font-weight:700;border-radius:6px;padding:8px 22px;margin:6px 0}
+  blockquote{margin:10px 0 4px;padding:8px 14px;border-left:4px solid var(--line);background:#f8f5ea;border-radius:0 8px 8px 0}
+  blockquote p{margin:6px 0}
 
   .choices{display:grid;gap:10px;margin-top:16px}
   .choice{text-align:left;background:#fff;border:2px solid var(--accent);border-radius:10px;padding:12px 16px;color:var(--ink)}
@@ -67,19 +68,14 @@
   .result.bad{border-color:var(--bad);background:#fdecea}
   .tag{display:inline-block;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;margin-bottom:4px}
   .good .tag{color:var(--good)} .mixed .tag{color:var(--mixed)} .bad .tag{color:var(--bad)}
-  .delta{font-weight:700;font-variant-numeric:tabular-nums}
+  .delta{font-weight:700;font-variant-numeric:tabular-nums;margin-bottom:0}
+  details{margin:0 0 16px;border:1px solid var(--line);border-radius:10px;padding:10px 14px;background:#fff}
+  summary{cursor:pointer;font-weight:600;color:var(--accent)}
 
   /* title */
-  .hero{max-width:680px;margin:6vh auto 0;text-align:center}
-  .hero .window{text-align:left}
+  .hero{max-width:680px;margin:6vh auto 0}
   .name{font-size:26px;font-weight:800;color:var(--accent);margin:8px 0 14px}
   .row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-
-  /* timesheet */
-  .slider{margin:14px 0}
-  .slider label{display:block;font-weight:600}
-  .slider input{width:100%}
-  .slider output{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent)}
 
   /* report */
   .report h2{border-bottom:2px solid var(--ink);padding-bottom:6px}
@@ -89,6 +85,10 @@
   .tripod{margin:8px 0 0;padding-left:20px}
   .tripod li{margin:3px 0}
   .small{font-size:13px;color:var(--muted)}
+  table.legs{width:100%;border-collapse:collapse;margin:10px 0}
+  table.legs th,table.legs td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  table.legs thead th{font-size:13px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
+  table.legs tr.top td,table.legs tr.top th{background:#fff3c9}
 </style>
 </head>
 <body>
@@ -99,305 +99,942 @@
 const SB_URL = "https://tsbfzpivjuiqcanqbyyy.supabase.co";
 const SB_KEY = "sb_publishable_4_GsvO9WQugPMzsW90_dHw_O0go6RZv";
 const FIRM = "Monroe & Delacroix, LLC";
-const STORE = "law5622-day-v2";
+const STORE = "law5622-day-v3";
+const HIGH = 430, MID = 280;          // score bands for the closing messages
 
 /* Team names come only from these lists, so no student name can reach the leaderboard. */
 const ADJ = ["Billable","Redacted","Privileged","Encrypted","Unmuted","Overruled","Sustained","Caffeinated","Verified","Paperless","Diligent","Reasonable","Docketed","Notarized"];
 const NOUN = ["Pelicans","Crawfish","Gators","Egrets","Footnotes","Macros","Captions","Deadlines","Timesheets","Passwords","Herons","Hyperlinks","Exhibits","Templates"];
 
-/* ---------- scenes ---------- */
+/* The three legs. LEG_Q is the question each leg asks, as Whelan's Teacher's Manual puts it. */
+const LEGS = [["ethics","Ethics"],["process","Process"],["technology","Technology"]];
+const LEG_NAME = {ethics:"Ethics", process:"Process", technology:"Technology"};
+const LEG_Q = [["Process","What is the lawyer trying to do?"],["Ethics","What is the lawyer allowed to do?"],["Technology","What is the market, and what are lawyers actually using?"]];
+const VERDICT = {good:"Best answer", mixed:"Partially correct", bad:"Clearly incorrect"};
+
+/* ---------- scenes: generated from m13-c01-day-at-the-firm-game-scenes.md ---------- */
 const SCENES = [
  {
-  id:"inventory", time:"8:05 AM", module:"The Practice Technology Landscape",
-  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
-  subject:"Insurance form wants a list of our \"technology\"",
-  issue:"Knowing what technology the firm actually uses, and who chose it",
-  body:["Good morning! The malpractice renewal form asks for every app and device the firm uses and where our data lives. It is due today. You took that class. Can you handle it?"],
-  narr:"You can name about five things from memory: Word, Outlook, the research platform, the printer that hates everyone, and something the paralegal calls \"the cloud.\"",
-  choices:[
-   {label:"Answer from memory. List the five things you can think of and send the form back before your coffee cools.", risk:2, prod:1, verdict:"bad",
-    result:"The firm signs a form listing five tools. It uses thirty-one, including a file-sharing app a paralegal installed in 2022 that has been quietly syncing client folders to her personal account ever since."},
-   {label:"Forward the form to Pelican Office Systems, the firm's IT vendor, and consider it handled.", risk:1, prod:2, verdict:"mixed",
-    result:"Pelican lists everything Pelican installed. It does not list anything people installed on their own, which is where the surprises live."},
-   {label:"Walk the office with a spreadsheet: product, publisher, version, whether the data is local or in the cloud, and whether each tool was mandated, a default, recommended, or actually chosen.", risk:0, prod:2, verdict:"good",
-    result:"It takes forty minutes. You find the mystery file-sharing app, two laptops nobody has updated in years, and the fact that nobody chose the PDF program. It just came with the computer."}
+  "id": "s805",
+  "time": "8:05 AM",
+  "title": "Working on a client file from home",
+  "quotes": [
+   "\"An encrypted web browser connection to an encrypted cloud host with your client files, where you are using passwords and multifactor authentication is reasonable. It would be unreasonable to upload a client file to an open web generative AI application, since your client's file may be exposed to other people.\""
   ],
-  debrief:{
-   ethics:"Can a firm protect client information in tools it does not know it is using?",
-   process:"Who at a firm should own the inventory, and how often should it be redone?",
-   tech:"Of the tools on your own inventory this semester, how many did you actually choose?"
-  }
+  "choices": [
+   {
+    "label": "Sign in from home to the firm's encrypted cloud storage, using your password and multifactor authentication.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "The standard is reasonableness, under Rule 1.1 and its Comment 8. Whelan calls this setup \"reasonable.\""
+     ],
+     [
+      "Technology",
+      "Every part of it is ordinary: an encrypted connection, an encrypted host, a password and a second factor."
+     ],
+     [
+      "Process",
+      "The chapter does not cover one. For discussion: what should a firm's written rule for working from home say?"
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "The summary was in my inbox at 7:40. Thank you. I see you signed in from home the proper way.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "Stay at the office until it is done. No online system is perfectly secure, so client files should never be opened over the internet.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It takes the ethical duty seriously but misreads it, and it gives up the technology altogether. Asked how to protect files from the NSA, Whelan answers: \"I do not think that having to secure client information so that an entity like the NSA cannot access it is reasonable.\" The duty is reasonable care, not perfect security.",
+    "verdict": "mixed",
+    "reply": "You stayed until 11:00? The summary is good, but the firm's cloud storage exists so that you can go home. Use it next time.",
+    "risk": 0,
+    "prod": 0
+   },
+   {
+    "label": "Upload the file to a free AI chatbot on the open web and ask it for a summary.",
+    "legs": [
+     "ethics"
+    ],
+    "tripod": [],
+    "expl": "It reaches for a convenient technology and ignores the duty. Whelan calls this \"unreasonable,\" because the client's file \"may be exposed to other people.\"",
+    "verdict": "bad",
+    "reply": "The summary is fine. How did you make it? Please tell me the client's file is not sitting in a chatbot. Come see me.",
+    "risk": 4,
+    "prod": 2
+   }
+  ],
+  "chapter": "Chapter 1 · A Look at Practice Technology",
+  "setup": "Ms. Delacroix needs a summary of a long client file first thing tomorrow. You will have to finish it from home tonight.",
+  "question": "How do you work on it?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": "the next morning"
  },
  {
-  id:"buying", time:"8:40 AM", module:"Planning and Buying Technology",
-  from:"Chad at BriefWright", addr:"chad@briefwright.example",
-  subject:"40% off ends at NOON (bank-grade encryption!!)",
-  issue:"Buying technology: requirements before products",
-  body:["Loved meeting your team! If Monroe & Delacroix signs the three-year BriefWright AI agreement by noon, I can lock in 40% off year one. Bank-grade encryption. Lawyers love it. Shall I send the signature page?"],
-  narr:"The demo last week was dazzling. Ms. Delacroix has replied-all with one line: \"You're the technology committee. Decide.\"",
-  choices:[
-   {label:"Write down the problem the firm is trying to solve first. Then ask Chad four things in writing: security, uptime, how lawyers supervise the output, and how accurate it is. Check what the firm's existing Microsoft 365 plan already does, and put the real cost in the three-year budget.", risk:0, prod:3, verdict:"good",
-    result:"Chad cannot say where uploaded client documents are stored. Half of what the firm wanted is already included in software it pays for. The noon deadline turns out to be flexible, as noon deadlines often are."},
-   {label:"Sign. The demo was great, and 40% is 40%.", risk:2, prod:1, verdict:"bad",
-    result:"In month thirteen the price goes up forty percent. Nobody asked where client documents go when they are uploaded, and \"bank-grade encryption\" turns out not to be a term with a definition."},
-   {label:"Say no. The firm has managed without it this long and can keep managing.", risk:0, prod:0, verdict:"mixed",
-    result:"Safe, and the firm keeps doing by hand what its competitors stopped doing by hand two years ago. \"No\" is a decision too, and you made it without knowing what problem was on the table."}
+  "id": "s840",
+  "time": "8:40 AM",
+  "title": "The email that went to the wrong Smith",
+  "quotes": [
+   "\"In the case of that misdirected email, while there may be repercussions for that error, it is a process that can probably be solved without new technology.\" (Ch. 2)",
+   "\"Email signature blocks are not a way to mitigate the risk of sending the email to the wrong recipient.\" (Ch. 10)"
   ],
-  debrief:{
-   ethics:"What does a lawyer have to know about a vendor before giving it client information?",
-   process:"What goes wrong when the product comes before the requirements?",
-   tech:"When the price jumps forty percent, how hard is it to leave?"
-  }
+  "choices": [
+   {
+    "label": "Add a confidentiality notice to every signature block, telling unintended recipients to delete the message.",
+    "legs": [
+     "process",
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It gestures at the ethical duty and changes neither the process nor the technology. Whelan: \"most confidentiality blocks are placed below the confidential information, so it has been exposed before the warning is visible,\" and \"there is no way for the lawyer to enforce that confidentiality.\"",
+    "verdict": "bad",
+    "reply": "The wrong Smith would have read the settlement figures before reaching the notice. What else do you have?",
+    "risk": 2,
+    "prod": 1
+   },
+   {
+    "label": "Buy a new email program that warns before a message goes outside the firm.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It is a technology answer to a process problem. A new program might help, but Whelan says this error \"can probably be solved without new technology,\" and he turns to \"a new email application\" only if the current one cannot disable auto-complete.",
+    "verdict": "mixed",
+    "reply": "Maybe. Before you get me a price, find out whether Outlook can already do this. I don't want to buy something we own.",
+    "risk": 0,
+    "prod": 1
+   },
+   {
+    "label": "Turn off auto-complete in Outlook, and write the message first and address it last.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "The stakes are confidentiality and privilege. Whelan: \"Lawyers have violated confidentiality by sending emails to the wrong person and have also ceded lawyer-client privilege.\""
+     ],
+     [
+      "Process",
+      "Write first, address last. Choosing recipients becomes a deliberate final step, and it \"does not require any new technology.\""
+     ],
+     [
+      "Technology",
+      "Turn off a feature the firm already has. Whelan calls this \"a good example of how your technology already supports an improvement.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "It costs nothing and we can start today. Send the instructions to everyone. I'll turn mine off first.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 2 · Planning, with Chapter 10 · Communications",
+  "setup": "Yesterday a paralegal's email with settlement figures went to the wrong \"J. Smith\" when Outlook filled in the address. Ms. Delacroix asks what the firm should change.",
+  "question": "What do you recommend?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"intake", time:"9:15 AM", module:"Practice Management",
-  from:"Front Desk", addr:"reception@monroedelacroix.example",
-  subject:"New caller on line 2. She is ALREADY talking.",
-  issue:"Client intake: collecting enough to open a matter, and no more",
-  body:["Potential new client on line 2 about a dispute with her old employer. I tried to get her name and she started with the events of 2019. Transferring now. Good luck."],
-  narr:"You pick up. She is mid-sentence. She has documents, dates, and strong opinions about a supervisor named Gary. You do not yet know her name or who is on the other side.",
-  choices:[
-   {label:"Let her talk and write down everything. More information is always better.", risk:3, prod:1, verdict:"bad",
-    result:"Twenty minutes later you have four pages of confidential detail from a person whose former employer may be a client of this firm. The firm now knows things it cannot un-know, and the rule on prospective clients has opinions about that."},
-   {label:"Tell her you can't discuss anything by phone, ask her to email the firm, and hang up.", risk:0, prod:0, verdict:"mixed",
-    result:"No harm done. Also no client. She calls the firm down the street, which has an intake form and a person who uses it."},
-   {label:"Gently interrupt. Explain why, then follow the intake form: her name, the other parties, and the kind of matter. Stop there until the conflicts check is done.", risk:0, prod:3, verdict:"good",
-    result:"Three minutes. You have enough to open a matter and no more. She is told when she will hear back. You now know the other side is Delta Marine Supply, which sounds familiar."}
+  "id": "s915",
+  "time": "9:15 AM",
+  "title": "The caller who is already talking",
+  "quotes": [
+   "\"No matter what path you take to create an intake process, you want to be careful how much you learn. If you have created a checklist for the process, you can better manage gathering enough—but not too much—information.\""
   ],
-  debrief:{
-   ethics:"What does the firm owe someone who never becomes a client?",
-   process:"Which questions did you deliberately leave off your intake form, and why?",
-   tech:"What does a form do here that a good listener cannot?"
-  }
+  "choices": [
+   {
+    "label": "Let her finish. The more you know, the better the firm can evaluate her case.",
+    "legs": [
+     "process",
+     "ethics"
+    ],
+    "tripod": [],
+    "expl": "It follows no process at all, and it invites exactly the \"disqualifying information\" Rule 1.18 is about.",
+    "verdict": "bad",
+    "reply": "You have four pages of notes from someone who is not a client yet. Do not tell me what is in them. You may have to stay off this matter entirely.",
+    "risk": 3,
+    "prod": 1
+   },
+   {
+    "label": "Stop her, take only her name and number, and promise a call back after the conflicts check.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It honors the ethical concern but leaves the process unfinished. The goal is \"enough—but not too much,\" and a conflicts check cannot run without knowing who else is involved.",
+    "verdict": "mixed",
+    "reply": "A name and a phone number? I can't check conflicts against that. Call her back and find out who is on the other side. Only that.",
+    "risk": 0,
+    "prod": 1
+   },
+   {
+    "label": "Stop her, warn her not to share details yet, and ask only the checklist questions: who she is, who is on the other side, and what kind of matter it is.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Rule 1.18. A lawyer who receives \"disqualifying information\" from a prospective client can be barred from representing an adverse client in the same or a substantially related matter."
+     ],
+     [
+      "Process",
+      "A checklist \"that limits what information is sought,\" with \"specific warnings for a prospective client not to overshare,\" and a clear point at which there is enough for the conflicts check."
+     ],
+     [
+      "Technology",
+      "The same checklist can be an online intake form. Whelan notes that a practice management system can put the answers straight into the firm's contact records, which saves entering them twice."
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Good. Three answers and a warning is all I need at this point. Run the conflicts check and we'll talk at 10:00.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 3 · Practice Management",
+  "setup": "A prospective client is on the phone about a dispute with her former employer. She has started telling you the whole story.",
+  "question": "What do you do?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"conflicts", time:"10:00 AM", module:"Conflicts Checking",
-  from:"You (note to self)", addr:"a sticky note on your monitor",
-  subject:"Delta Marine Supply: why do I know this name?",
-  issue:"Conflicts checking before the firm takes the matter",
-  body:["The caller's former employer is Delta Marine Supply. She wants to sue them. She would like an answer today."],
-  narr:"The name itches. A sign on the highway? A client? A fishing show? Ms. Delacroix wants to know by 10:30 whether the firm can take the case.",
-  choices:[
-   {label:"Email all the lawyers: \"Anybody know a Delta Marine?\" If nobody answers by 10:30, call it clear.", risk:3, prod:1, verdict:"bad",
-    result:"Nobody answers, because everybody is busy. The firm accepts the case. Delta Marine Supply Inc. is a current client of this firm. Its general counsel learns about the new matter from the petition."},
-   {label:"Search the firm's conflicts workbook for the name, including former names and aliases. Report what you find to Ms. Delacroix as a match for her to evaluate.", risk:0, prod:3, verdict:"good",
-    result:"One match: Delta Marine Supply Inc., current client. You do not decide what it means. The check warns that a risk exists; the partner decides what to do about it, and she does, by 10:20."},
-   {label:"Trust the itch. Call the woman back yourself and tell her the firm can't help.", risk:1, prod:0, verdict:"mixed",
-    result:"You happened to be right, which is not the same as having checked. You also made a partner's decision on the strength of a feeling, and told a stranger more than she needed to know about who the firm represents."}
+  "id": "s1000",
+  "time": "10:00 AM",
+  "title": "The conflicts check",
+  "quotes": [
+   "\"You may have updated your contacts record with someone's new last name—and congratulated them on their marriage—but failed to make the update in your conflicts checking data, creating risk that, in the future, you will miss the name change and their new relationship.\""
   ],
-  debrief:{
-   ethics:"Who decides whether a match is a conflict, and what can be done about one?",
-   process:"Why does \"one fact, one place\" matter for finding a name?",
-   tech:"What would the search have missed if the company had changed its name?"
-  }
+  "choices": [
+   {
+    "label": "\"We're clear. The conflicts spreadsheet is the firm's system for this, and it has no Errol.\"",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It trusts the technology and skips the process. The spreadsheet is only as good as its last update, and this is the exact failure in the passage: the name changed in one place and not the other.",
+    "verdict": "bad",
+    "reply": "We're clear? I was at her wedding in June. Look again, under Smith.",
+    "risk": 4,
+    "prod": 1
+   },
+   {
+    "label": "\"Not yet. The spreadsheet may still have her as Smith. I'm searching the previous name, and the two records need to be made to match.\"",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Rules 1.7, 1.9 and 1.18. Whelan calls them \"warnings for you to be sure you know what impact your prospective client's case may have on your current and former clients.\""
+     ],
+     [
+      "Process",
+      "Search previous names, because \"knowing previous names or even aliases will be important,\" and then bring the two records back into step. Whelan: \"You will also want to have a way to validate or verify, periodically, that the data is the same in both systems.\""
+     ],
+     [
+      "Technology",
+      "The firm keeps contacts in one tool and conflicts data in another. Whelan's goal is \"a single source of truth,\" because every extra copy \"will create new risk.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "You found her under Smith? Good catch. Send me the record, and fix the spreadsheet today.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "\"We have a conflict. Leslie Errol is in the firm's contacts.\"",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It takes the ethical risk seriously and tells the partner the firm has a relationship. But it overstates what a search can show. Whelan: the check \"will warn you about the existence of a risk\" and \"is not dispositive of whether you can take on a client.\"",
+    "verdict": "mixed",
+    "reply": "Being in my contacts makes her someone I sent a card to. What does the conflicts record say? Bring me that and I'll decide.",
+    "risk": 0,
+    "prod": 1
+   }
+  ],
+  "chapter": "Chapter 7 · Conflicts Check",
+  "setup": "A prospective client wants to sue Leslie Errol over an unpaid business debt. You search the firm's conflicts spreadsheet for \"Errol\" and find nothing. The firm's Outlook contacts do have a Leslie Errol, with a note: \"Formerly Leslie Smith. Married in June. Sent a card.\"",
+  "question": "What do you report to Ms. Delacroix?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"deadline", time:"10:30 AM", module:"The Calendar",
-  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
-  subject:"Guidry judgment came in. Calendar it.",
-  issue:"Calculating and calendaring deadlines",
-  body:["Notice of the signing of judgment in Guidry v. Bayou Crown Roofing was mailed yesterday. We may want a new trial. We may want to appeal. Get the deadlines on the calendar before lunch."],
-  narr:"There is a paper wall calendar from a title company above your desk. There is also the firm's deadline calculator, a shared matter calendar, and an AI assistant that has never once said \"I don't know.\"",
-  choices:[
-   {label:"Use the firm's deadline calculator with its holiday table. Calendar the whole chain on the shared matter calendar, with reminders ahead of each date and a note of the clerk's filing cutoff time.", risk:0, prod:3, verdict:"good",
-    result:"Three deadlines, counted the way the rule says to count them, visible to everyone on the matter. The reminder fires two days early. The note about the clerk's cutoff will matter more than you expect."},
-   {label:"Count seven days on the wall calendar and put one entry on your own Outlook calendar.", risk:2, prod:1, verdict:"bad",
-    result:"Your date is wrong, because the rule does not count days the way a wall calendar does. Worse, the only copy lives on your calendar, and next week you have the flu. Nobody else knows the deadline exists."},
-   {label:"Ask the AI assistant when the motion is due and calendar whatever it says.", risk:3, prod:2, verdict:"bad",
-    result:"It gives you a confident date in one second. It cites no rule, has not heard of the holiday in the middle, and when asked \"are you sure?\" it apologizes and gives you a different confident date."}
+  "id": "s1030",
+  "time": "10:30 AM",
+  "title": "The response deadline",
+  "quotes": [
+   "\"You should never guess on a filing date. Be certain and, if nothing else, call the court to confirm the date once you have done your calculation.\""
   ],
-  debrief:{
-   ethics:"A missed deadline is a classic malpractice claim. Who at the firm is responsible for the count?",
-   process:"What is the difference between a calendar entry and a calendaring system?",
-   tech:"The calculator can be right and the matter can still be blown. How?"
-  }
+  "choices": [
+   {
+    "label": "Calendar the following Monday. A deadline that falls on a weekend usually moves to the next business day.",
+    "legs": [
+     "process",
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It is a guess, with no rule read and no tool used. Whelan says a Saturday deadline \"often\" moves to the following Monday. Often is not always.",
+    "verdict": "bad",
+    "reply": "Why Monday? Which rule says so? If you can't tell me, we don't know the date yet.",
+    "risk": 3,
+    "prod": 1
+   },
+   {
+    "label": "Run the firm's rules-based calendaring template and calendar the date it produces.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It uses the right technology and stops there. Whelan favors templates, because \"manual entry introduces the possibility of error.\" But a template is only as good as the rules loaded into it, and the Practice Pointer still says to be certain and confirm.",
+    "verdict": "mixed",
+    "reply": "The template is usually right. Call the clerk anyway. I don't put \"usually\" on the calendar.",
+    "risk": 1,
+    "prod": 2
+   },
+   {
+    "label": "Read the court's rule on counting days, calculate the date, call the clerk's office to confirm it, and put it on the firm's shared court-dates calendar.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Rule 1.3, diligence and promptness. Whelan adds that missed deadlines \"can lead to legal malpractice claims.\""
+     ],
+     [
+      "Process",
+      "Never guess. How to count \"will be spelled out in court or other rules,\" and the last step is to \"call the court to confirm the date.\""
+     ],
+     [
+      "Technology",
+      "A shared calendar for court dates, \"so that everyone has a shared view of the law practice's critical dates.\" A rules-based template can do the calculation."
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Confirmed with the clerk and on the shared calendar. That is how it's done. Thank you.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 4 · The Calendar",
+  "setup": "A complaint against a firm client was served last week. Ms. Delacroix asks you to calendar the date the response is due. By your count, the last day lands on a Saturday.",
+  "question": "What do you do?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"research", time:"11:15 AM", module:"Legal Research",
-  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
-  subject:"Quick question (it is not quick)",
-  issue:"AI as a research tool, in an area where the lawyer isn't proficient",
-  body:["I need an answer on the servitude question before my 2:00 client call. You've been doing this for a year now, so I assume it's easy. Thanks!!"],
-  narr:"The question is esoteric. You try two natural-language searches and trust neither result. So you paste the partner's whole email into the firm's AI assistant. Forty seconds later it hands you four confident paragraphs and three citations. It reads like a treatise. You have no idea whether it is right.",
-  choices:[
-   {label:"Forward the AI answer to the partner as written. It's polished, and it's 11:15.", risk:3, prod:2, verdict:"bad",
-    result:"The partner reads it to the client at 2:00, nearly word for word. At 2:20 the client's in-house counsel asks for a copy of the second case. Nobody can find the second case. Nobody will ever find the second case."},
-   {label:"Close the AI window, ignore what it said, and research the question from scratch in the treatises.", risk:0, prod:0, verdict:"mixed",
-    result:"Your answer is correct, careful, and finished at 4:30. The call was at 2:00. The partner improvised. You also billed three hours for something that had a faster safe route."},
-   {label:"Treat the AI answer as a map. Pull every cited authority in the research database, confirm each one exists and says what the AI claims, then tell the partner what is verified and what is still uncertain.", risk:0, prod:3, verdict:"good",
-    result:"Two citations check out. The third is real but stands for the opposite point, which you flag. The partner goes into the call at 2:00 knowing exactly how far the answer can be trusted."}
+  "id": "s1115",
+  "time": "11:15 AM",
+  "title": "The AI research answer",
+  "quotes": [
+   "\"A lawyer who uses these AI-infused legal research tools will need to be vigilant about ensuring that a results set actually exists, that the documents retrieved and cited are real documents, and that the things that it purports to say are actually being said by the court or legislature or creator of the underlying document.\""
   ],
-  debrief:{
-   ethics:"Competence includes knowing the limits of the tool and of your own knowledge. Also: what client facts were in the email you pasted into the AI, and where did they go?",
-   process:"What does this firm's research workflow say about verifying AI output before it reaches a partner or a client?",
-   tech:"Which tool was this: a general chatbot or the research platform's own AI? Does the answer change?"
-  }
+  "choices": [
+   {
+    "label": "Send it to her. It came from the research publisher's own AI, which draws on the publisher's curated sources, not from a general chatbot.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It understands the technology and skips the process. The distinction is real: publishers' curated collections \"should reduce the likelihood of fabricated results.\" Reducing is not eliminating.",
+    "verdict": "mixed",
+    "reply": "Did you open the cases? All three? I'm about to repeat this to a client. Check them and call me before 2:00.",
+    "risk": 2,
+    "prod": 2
+   },
+   {
+    "label": "Open each cited authority, confirm it exists and says what the answer claims, and tell her what you verified.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Competence (Rule 1.1) and candor to the court (Rule 3.3). Whelan: \"Lawyers who submit confabulations to the court in the form of non-existent cases and citations are failing to understand and use their legal research technology competently.\""
+     ],
+     [
+      "Process",
+      "Verify before anything leaves your desk. Lawyers \"continue to have the imperative to validate their research, just as they would have done with any other legal research.\""
+     ],
+     [
+      "Technology",
+      "Knowing which kind of AI produced the answer matters, but it does not replace the check."
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Two authorities solid, one doubtful, and you told me which is which. That is what I needed for the 2:00 call.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "Paste the question into a general AI chatbot for a second opinion, and send the answer if the two agree.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It uses one technology to check another. Whelan says general AI tools \"may not restrict their results or outputs to legal information or even to reality.\" Two tools agreeing does not show that a cited case exists.",
+    "verdict": "bad",
+    "reply": "Two chatbots agreeing is not research. And what exactly did you paste into the second one? Check the actual cases. Quickly.",
+    "risk": 3,
+    "prod": 1
+   }
+  ],
+  "chapter": "Chapter 6 · Legal Research",
+  "setup": "Ms. Delacroix emails a challenging question she needs answered before a 2:00 client call. Your own searches are not convincing. The AI assistant inside the firm's research platform returns four confident paragraphs and three citations.",
+  "question": "What do you do with the answer?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"payment", time:"12:00 PM", module:"Professional Communications",
-  from:"Front Desk", addr:"reception@monroe-delacroix-payables.example",
-  subject:"ACTION NEEDED: payment approval before noon",
-  issue:"Email security, phishing and social engineering; internal financial controls",
-  body:["Hi! One vendor invoice needs a second approver today. Just click the button and sign in with your normal firm username and password. Takes 10 seconds. You're a lifesaver."],
-  fakebtn:"APPROVE PAYMENT",
-  narr:"Your computer beeps. The front desk usually emails you about callers, not payments. Still, it is flattering that the firm trusts you with payables. The sign-in page wants the same password you used to log in to your PC this morning.",
-  choices:[
-   {label:"Click the green button, type your username and password, and get back to work.", risk:4, prod:1, verdict:"bad",
-    result:"The page says \"Thank you!\" and closes. By 12:30 your mailbox is sending the same message to every client in your contacts, and somebody in another time zone is reading the partner's servitude email."},
-   {label:"Delete it. Obviously fake. Say nothing, because you're busy.", risk:1, prod:1, verdict:"mixed",
-    result:"You are safe. The same email is sitting in eleven other inboxes, and the new paralegal thinks it is flattering that the firm trusts him with payables."},
-   {label:"Don't click. Check the sender's address, call the front desk at the extension you already know, and report the message to IT.", risk:0, prod:3, verdict:"good",
-    result:"The address was monroe-delacroix-payables, not the firm's own domain. The front desk sent nothing. Pelican Office Systems blocks the sender and warns the whole firm within five minutes. It cost you one phone call."}
+  "id": "s1200",
+  "time": "12:00 PM",
+  "title": "The email in the partner's inbox",
+  "quotes": [
+   "\"Passwords should not be shared. You are the only person who needs access to your passwords. If you have a resource that someone else needs access to, give them their own access with their own password.\" (Ch. 12)"
   ],
-  debrief:{
-   ethics:"If the password had been stolen, whose information is exposed, and what would the firm owe its clients?",
-   process:"Should one click from one person ever be enough to approve a payment? What control is missing?",
-   tech:"What in the message itself would have told you where it really came from?"
-  }
+  "choices": [
+   {
+    "label": "Sign in with her username and password, so the invitation is handled before she gets back.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "This is Whelan's own fact pattern. The assistant signs in to save the lawyer time, and \"a few days later, the law firm gets a ransom request to recover client files that have been exfiltrated using Lawyer's username and password.\"",
+    "verdict": "bad",
+    "reply": "You signed in as me? To what? I never asked anyone for a Google Drive. Call IT right now and tell them exactly what you typed.",
+    "risk": 4,
+    "prod": 1
+   },
+   {
+    "label": "Leave the email for her and go back to your own work.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It avoids today's trap and changes nothing else. The process that created the risk is still in place: you still hold her password.",
+    "verdict": "mixed",
+    "reply": "I saw the email, and I'm glad you left it alone. Next time, tell me.",
+    "risk": 1,
+    "prod": 1
+   },
+   {
+    "label": "Leave the email for her, tell her about it, and ask the firm to give you your own access to her mailbox in place of her password.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Supervision. Chapter 12 starts from \"Model Rule 5.3 and your duty to supervise non-lawyers who you employ,\" and the manual names the issues in a case like this one: \"delegation of oversight, the implications of password sharing or not observing least access.\""
+     ],
+     [
+      "Process",
+      "The firm needs a set way for someone to help with a lawyer's inbox that does not depend on borrowing the lawyer's identity."
+     ],
+     [
+      "Technology",
+      "Separate access for each person. Whelan: \"give them their own access with their own password.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Thank you for not clicking. I have never heard of an alumni drive. And you're right about the password. I should not have given it to you. I'll call IT.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Teacher's Manual sample fact pattern, with Chapter 12 · Securing Your Practice",
+  "setup": "Ms. Delacroix is in a deposition. She gave you her password months ago so you could keep her inbox moving. An email arrives for her from a former colleague, inviting her to a shared Google Drive for an alumni event. The link opens a sign-in page.",
+  "question": "What do you do?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": "back from the deposition"
  },
  {
-  id:"mfa", time:"1:30 PM", module:"Securing Your Practice",
-  from:"Your phone", addr:"buzzing face-down on the desk",
-  subject:"Approve sign-in? Approve sign-in? Approve sign-in?",
-  issue:"Account security: passwords and second factors",
-  body:["Someone is trying to sign in to your firm account. Location: not Baton Rouge. Tap APPROVE if this is you."],
-  narr:"It is not you. You are eating a sandwich. The phone buzzes a fourth time. It is extremely annoying.",
-  choices:[
-   {label:"Tap Approve so it stops buzzing.", risk:4, prod:1, verdict:"bad",
-    result:"It stops buzzing. That is because the person in not-Baton-Rouge is now signed in as you. The second factor did its job perfectly. You were the part that failed."},
-   {label:"Tap Deny. Then change your password to a new one generated by your password manager and used nowhere else, and tell Pelican Office Systems what happened.", risk:0, prod:3, verdict:"good",
-    result:"Someone had your password, and now they have a password that opens nothing. IT finds the same attempts against two other accounts and resets those too. Four minutes, including the sandwich."},
-   {label:"Tap Deny each time and get back to work. The system is clearly doing its job.", risk:1, prod:1, verdict:"mixed",
-    result:"It is doing its job. But a prompt only appears after the password is right, so somebody has your password. They will try again at 3:00 a.m., when you are asleep and your thumb is less careful."}
+  "id": "s130",
+  "time": "1:30 PM",
+  "title": "Choosing a second sign-in step",
+  "quotes": [
+   "\"While it is better than nothing, text-messaging MFA is the least desirable method of authentication. Even one-time codes, generated by an app on your phone, are something you can disclose by mistake. The best method is to use a hardware key that you place in or next to your device.\""
   ],
-  debrief:{
-   ethics:"What counts as reasonable security for a lawyer's account? Reasonable, not invulnerable.",
-   process:"Who needs to hear about a near miss, and how fast?",
-   tech:"Which second factor is weakest, and which is strongest?"
-  }
+  "choices": [
+   {
+    "label": "A code sent to your phone by text message.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "\"Better than nothing,\" but \"the least desirable method.\"",
+    "verdict": "mixed",
+    "reply": "Text messages? The front desk has keys sitting on the counter. Better than nothing, I suppose.",
+    "risk": 1,
+    "prod": 2
+   },
+   {
+    "label": "A code from an authenticator app on your phone.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "When the hardware option is not offered, \"using a multi-factor authenticator app is the next best option.\" Here it is offered.",
+    "verdict": "mixed",
+    "reply": "An app is fine. The front desk says the keys are better and they're free, for what it's worth.",
+    "risk": 0,
+    "prod": 2
+   },
+   {
+    "label": "A hardware key.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Whelan's standard is reasonableness: a password and a second factor \"are what I would consider reasonable for a lawyer protecting confidential and private client data.\""
+     ],
+     [
+      "Technology",
+      "\"The best method is to use a hardware key.\" If someone sends a convincing fake email, there is no code to give away."
+     ],
+     [
+      "Process",
+      "Chapter 12 does not cover one. Chapter 17 supplies a piece: keep \"a copy of your offline authentication codes,\" because a lost device can lock you out of client matters. For discussion: who at the firm decides which method everyone uses?"
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "I hear you took a hardware key. IT tells me I have to get one too. Fine.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "Skip it. Your password is long and you use it nowhere else.",
+    "legs": [
+     "ethics"
+    ],
+    "tripod": [],
+    "expl": "It relies on one technology and ignores the standard. Whelan: \"Anything short of this creates a potential risk that seems unreasonable, given the widespread availability of multi-factor authentication.\"",
+    "verdict": "bad",
+    "reply": "IT tells me you skipped the second step. Everyone in this firm uses one. Go back and set it up today.",
+    "risk": 3,
+    "prod": 1
+   }
+  ],
+  "chapter": "Chapter 12 · Securing Your Practice",
+  "setup": "The firm's new document system asks you to set up a second sign-in step. The front desk has hardware keys for anyone who wants one.",
+  "question": "Which do you choose?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"template", time:"2:15 PM", module:"Document Automation and Management",
-  from:"Odette Delacroix", addr:"odelacroix@monroedelacroix.example",
-  subject:"Engagement letter for the new client by 3:00",
-  issue:"Document reuse, templates and metadata",
-  body:["A new client is coming at 3:00. I need an engagement letter to email her beforehand. It's basically the same as the one we did for Marie Boudreaux's custody matter. Shouldn't take long!"],
-  narr:"The Boudreaux letter is right there in the client folder. The firm's engagement-letter template is also right there, one folder up, looking neglected.",
-  choices:[
-   {label:"Open the Boudreaux letter, type the new client's name over the old one, Save As, and email the Word file.", risk:3, prod:1, verdict:"bad",
-    result:"The letter looks perfect. Its document properties still say \"Boudreaux, Marie, Custody Modification,\" and so do the tracked changes. The new client's first experience of the firm is reading another client's business."},
-   {label:"Start from the firm's engagement-letter template, fill in the fields, run Inspect Document on a copy, and send it as a PDF.", risk:0, prod:3, verdict:"good",
-    result:"Eight minutes. The letter has the right client, the right matter number, and nothing in it that anyone typed for anyone else. The template did the formatting."},
-   {label:"Retype the whole letter into a blank document, to be safe.", risk:0, prod:0, verdict:"mixed",
-    result:"Fifty minutes of typing, formatted by hand with the space bar. It carries nobody else's information. It does carry a new typo in the fee paragraph, which the client spots immediately."}
+  "id": "s215",
+  "time": "2:15 PM",
+  "title": "The brief is in the wrong font size",
+  "quotes": [
+   "\"What if you opened up your word processor and, through no fault of your own, the font had defaulted to 11-point instead of the 12-point preferred by the e-filing web site? You could select all of the text in your document… and convert it to 12-point. But what if you had used additional font sizes: headings and so on?\""
   ],
-  debrief:{
-   ethics:"What does a document say about a client that is not visible on the page?",
-   process:"Why does a firm keep templates instead of reusing the last letter?",
-   tech:"What did Inspect Document find in your own file this semester?"
-  }
+  "choices": [
+   {
+    "label": "Select all of the text and set it to 12-point.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It knows one feature of the technology and misses the better one. The body text ends up at 12-point, but so does everything else. Whelan raises this exact problem: \"what if you had used additional font sizes: headings and so on?\"",
+    "verdict": "mixed",
+    "reply": "The body text is 12-point now. So are all the headings. Please fix them before this goes to the court.",
+    "risk": 0,
+    "prod": 1
+   },
+   {
+    "label": "Modify the Normal style from 11-point to 12-point.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "None, and Whelan says so: \"There are no professional rules that have to do with document automation, which is a process.\" What governs here is the court's formatting rule. This is one of the manual's \"productivity\" issues, not a risk issue."
+     ],
+     [
+      "Process",
+      "Apply styles consistently while drafting and fix the look afterward, in one place."
+     ],
+     [
+      "Technology",
+      "Modify the Normal style, \"and the entire document's normal text will reformat to the new font size.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Fixed in a minute, and the headings still look right. Filed. Thank you.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "Go through the brief and change each body paragraph to 12-point by hand.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It abandons the process the document was built on. Whelan: \"Do not go through your document, apply a style, and then manually change the look and feel.\"",
+    "verdict": "bad",
+    "reply": "It has been forty minutes and you're on page nine of thirty. There is a faster way. Ask Camille to show you styles.",
+    "risk": 0,
+    "prod": 0
+   }
+  ],
+  "chapter": "Chapter 8 · Document Automation",
+  "setup": "A brief is ready to e-file. It was written with Word's styles, and the body text is 11-point throughout. The court requires 12-point. The headings are already in larger sizes.",
+  "question": "How do you fix it?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"redact", time:"3:30 PM", module:"E-Filing and Litigation",
-  from:"Camille Thibodeaux", addr:"cthibodeaux@monroedelacroix.example",
-  subject:"Fontenot exhibit must be e-filed today",
-  issue:"Redaction before filing",
-  body:["The exhibit in the Fontenot child support matter has to be filed before the clerk's cutoff. It has a Social Security number, a bank account number, a date of birth, and the child's name on it. Please redact and file. I'm in a deposition until 5."],
-  narr:"The PDF is open. The highlighter tool can be set to black. A black marker sits in your pen cup. The Redact tool is under a menu you have opened exactly once, in a class.",
-  choices:[
-   {label:"Print it, black out the sensitive parts with the marker, scan it, and file the scan.", risk:1, prod:0, verdict:"mixed",
-    result:"It mostly works. The file is many times larger and no longer searchable, the clerk's system takes three tries to accept it, and the marker missed the fifth \"Josephine,\" on page 2."},
-   {label:"Draw black boxes over the sensitive parts in the PDF and file it. Black is black.", risk:4, prod:1, verdict:"bad",
-    result:"Opposing counsel's paralegal presses Select All, Copy, Paste. Everything under the boxes arrives in a new document, including the account number. The filing is public."},
-   {label:"Work on a copy, never the original. Use the Redact tool: mark, apply, sanitize. Then test it the way an opponent would: search for the name and try to copy and paste.", risk:0, prod:3, verdict:"good",
-    result:"The search for \"Josephine\" finds nothing. Copy and paste brings back nothing. The original is untouched in the client folder. Filed at 3:50, well ahead of the cutoff."}
+  "id": "s250",
+  "time": "2:50 PM",
+  "title": "Reusing last month's letter",
+  "quotes": [
+   "\"Metadata travels with the document, so when you re-use a document or create a second version of it, the original metadata is brought forward as well. There are obvious risks in re-use, where you intermingle client data or you retain strategy or details from an earlier version of a document.\""
   ],
-  debrief:{
-   ethics:"Who is harmed when a redaction fails, and can a public filing be taken back?",
-   process:"Why redact a copy, and why test before filing?",
-   tech:"What is the difference between hiding information and removing it?"
-  }
+  "choices": [
+   {
+    "label": "Open the Boudreaux letter, replace the names, and email it as a Word file.",
+    "legs": [
+     "ethics",
+     "process",
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It addresses none of the three. The Boudreaux letter's metadata \"is brought forward as well,\" and the new client receives it in an editable file.",
+    "verdict": "bad",
+    "reply": "The new client just asked me who Marie Boudreaux is. She found the name in the file you sent. Come to my office.",
+    "risk": 4,
+    "prod": 1
+   },
+   {
+    "label": "Open the Boudreaux letter, replace the names, and email it as a PDF.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It applies the technology fix and keeps the risky process. The PDF removes \"tracked changes or comments,\" but Whelan notes it still retains \"some of the basic metadata (author, title, creation date),\" and the letter still began as another client's document.",
+    "verdict": "mixed",
+    "reply": "The PDF was the right call. But check the document title she will see. If it says Boudreaux, we have a problem. Use the template next time.",
+    "risk": 2,
+    "prod": 2
+   },
+   {
+    "label": "Start from the blank template, fill it in, and email it as a PDF.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Confidentiality. The risk Whelan names is that \"you intermingle client data.\""
+     ],
+     [
+      "Process",
+      "Start every new document from a template, which is \"empty of client- or case-specific information,\" and send finished documents as PDFs."
+     ],
+     [
+      "Technology",
+      "Metadata is the part of the document you do not see in the print view. Saving as PDF \"will eliminate much of the metadata you would not want to share.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Clean letter, right client, sent as a PDF. She signed it before she sat down.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 9 · Document Management",
+  "setup": "A new client arrives at 3:00 and needs an engagement letter by email first. Last month's letter for Marie Boudreaux's custody matter is nearly identical. The firm also has a blank engagement-letter template.",
+  "question": "How do you prepare the letter?",
+  "from": "Odette Delacroix",
+  "addr": "odelacroix@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"closedfile", time:"4:45 PM", module:"Closing Files",
-  from:"Front Desk", addr:"reception@monroedelacroix.example",
-  subject:"Former client on line 1, needs something from her 2017 file",
-  issue:"Closed files: retention, retrieval and who owns what",
-  body:["A former client says the firm handled a matter for her in 2017 and she needs a copy of a signed document from it for a closing tomorrow morning. She is very polite and very worried."],
-  narr:"You were in college in 2017. You have no idea where a nine-year-old file would be, whether the firm still has it, or whether it is hers or the firm's.",
-  choices:[
-   {label:"Tell her that files that old have surely been destroyed, and wish her luck.", risk:2, prod:1, verdict:"bad",
-    result:"The file was not destroyed. It was sitting in the Closed Matters folder the whole time, and part of it was hers. She learns this after her closing falls through."},
-   {label:"Look up the matter's closing record: what went back to the client, what the firm kept, where it is stored, and when it is due to be destroyed. Retrieve the document from the read-only closed-matters folder.", risk:0, prod:3, verdict:"good",
-    result:"The closing checklist from 2017 answers every question in one page. The signed document is in the closed-matters folder in a format that still opens. She has it in ten minutes."},
-   {label:"Search every drive and old mailbox you can reach, and send her whatever turns up with her name on it.", risk:1, prod:0, verdict:"mixed",
-    result:"After an hour you find \"Agreement FINAL final v3.wpd.\" Nothing on your computer can open it, and you cannot tell whether it is the signed version or a draft. You send it anyway, with a hopeful note."}
+  "id": "s330",
+  "time": "3:30 PM",
+  "title": "Redacting the exhibit",
+  "quotes": [
+   "\"If you redact a document by doing that—for example, placing a black box over the text but leaving the text in the document—you are merely obscuring the visibility of the information. The text remains a part of the document, and you risk someone being able to access it.\""
   ],
-  debrief:{
-   ethics:"Which parts of a closed file belong to the client?",
-   process:"What should happen on the day a matter closes so that this call is easy nine years later?",
-   tech:"Will the files you save today still open in nine years? What would make sure?"
-  }
+  "choices": [
+   {
+    "label": "Draw black boxes over the sensitive text in the PDF.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It uses the technology without understanding it. The marks sit \"on top of the document,\" and the text underneath remains.",
+    "verdict": "bad",
+    "reply": "I selected the page and pasted it into an email. The Social Security number came through. I'm calling the clerk now.",
+    "risk": 4,
+    "prod": 1
+   },
+   {
+    "label": "Print it, black out the text with a permanent marker, and scan the page.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It is a sound process that does without the technology. Whelan calls the marker method \"old-fashioned, and yet still reliable,\" because the ink becomes part of the page. He also says: \"This is a lot of work.\"",
+    "verdict": "mixed",
+    "reply": "That works. It took an hour and the file is enormous, but it works. Let me show you the redaction tool tomorrow.",
+    "risk": 0,
+    "prod": 0
+   },
+   {
+    "label": "Make a copy of the PDF and use the PDF editor's redaction tool on the copy.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "The chapter cites no rule. It names the harm: a failed redaction \"may end up with you inadvertently disclosing information.\" For discussion: which duty is that, and who is hurt?"
+     ],
+     [
+      "Process",
+      "Work on a copy. Whelan: \"redact a copy of the original document. Otherwise you will permanently obscure the original.\""
+     ],
+     [
+      "Technology",
+      "A redaction function \"removes the text or other document elements from the document.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Filed, and the original is untouched. I tried copying text from the redacted pages and got nothing. Thank you.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 14 · Electronic Filing",
+  "setup": "An exhibit in the Fontenot child support matter must be e-filed today. It shows a Social Security number, a bank account number, and the child's name and date of birth.",
+  "question": "How do you redact it?",
+  "from": "Camille Thibodeaux",
+  "addr": "cthibodeaux@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"continuity", time:"5:20 PM", module:"Closing Practices",
-  from:"Camille Thibodeaux", addr:"cthibodeaux@monroedelacroix.example",
-  subject:"Odette is in the hospital",
-  issue:"Continuity: when a lawyer is suddenly unavailable",
-  body:["Odette's husband just called. She was taken to the hospital an hour ago. She will be fine, but she is unreachable for at least 72 hours. She has a hearing at 9:00 tomorrow. Her calendar, her files and her passwords are all hers. What do we do?"],
-  narr:"Her office door is open. Her laptop is locked. Everyone knows she has a dog named Beignet.",
-  choices:[
-   {label:"Try to get into her laptop. The password is probably Beignet and a year.", risk:3, prod:1, verdict:"bad",
-    result:"It is not Beignet2026. It is not Beignet2025 either. On the fifth try the account locks, and now nobody can get in, including IT, until Friday."},
-   {label:"Open the firm's continuity binder: who covers her matters, where her calendar and files are, and how emergency access to her accounts works. Then call the covering lawyer and the client.", risk:0, prod:3, verdict:"good",
-    result:"The binder names her backup, who has the hearing file by 5:45. The client hears it from the firm before hearing it from anyone else. Nobody guessed a password."},
-   {label:"Call and text her husband until he can ask her for her passwords.", risk:1, prod:0, verdict:"mixed",
-    result:"He does not answer, because he is at a hospital. When he finally does, at 10:00 p.m., he reads you a password over the phone from memory, with one character wrong."}
+  "id": "s445",
+  "time": "4:45 PM",
+  "title": "Closing the Guidry file",
+  "quotes": [
+   "\"The automation piece is key. Unless you have staff to help you, you will need to look for ways to automate a lot of these processes. Otherwise, you may find that documents disappear before they are supposed to, swept up in a periodic but perhaps unplanned clean up of a storage drive.\""
   ],
-  debrief:{
-   ethics:"What do a lawyer's clients have a right to expect if the lawyer is suddenly gone?",
-   process:"What belongs in a continuity plan, and who needs to know where it is?",
-   tech:"Where does the password to the plan itself live?"
-  }
+  "choices": [
+   {
+    "label": "Leave it where it is among the active matters. Nothing more will be added to it.",
+    "legs": [
+     "process",
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It has neither a process nor a tool. An unprotected folder is what gets \"swept up in a periodic but perhaps unplanned clean up of a storage drive.\"",
+    "verdict": "bad",
+    "reply": "IT cleans up that drive every few months. If Guidry is still sitting with the active matters, it could be swept up. Please move it.",
+    "risk": 2,
+    "prod": 1
+   },
+   {
+    "label": "Work through the firm's closing checklist by hand: move the folder to Closed Matters and set it to read-only.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It is the right process without the technology. Whelan allows it: \"you can also have a checklist that reflects your closing file process and perform the steps manually.\" It works only as long as someone remembers every step, every time.",
+    "verdict": "mixed",
+    "reply": "Thanks, that does it. Just remember the checklist only works if we do every step, every time.",
+    "risk": 1,
+    "prod": 1
+   },
+   {
+    "label": "Move it to Closed Matters in the firm's document system, where closed files are protected and their retention period runs automatically.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "The chapter cites no rule. It says closed files are kept for a limitations period \"or for professional ethics reasons,\" and that \"you will need to be able to distinguish what belongs to you and what belongs to them.\" For discussion: what does the firm owe a former client who asks for the file?"
+     ],
+     [
+      "Process",
+      "A closing routine that runs the same way for every matter."
+     ],
+     [
+      "Technology",
+      "\"The automation piece is key.\" A document management system \"can apply that sort of protection automatically.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Closed and locked. One less thing to think about.",
+    "risk": 0,
+    "prod": 3
+   }
+  ],
+  "chapter": "Chapter 16 · File Retention and Closed Matters",
+  "setup": "The Guidry matter ended last week. Camille Thibodeaux asks you to close the file.",
+  "question": "What do you do with the matter's folder?",
+  "from": "Camille Thibodeaux",
+  "addr": "cthibodeaux@monroedelacroix.example",
+  "replyNote": ""
  },
  {
-  id:"timesheet", time:"5:55 PM", module:"Time, Billing, and Accounting",
-  from:"Billing Department", addr:"billing@monroedelacroix.example",
-  subject:"Timesheets close at 6:00. No exceptions. We mean it this time.",
-  issue:"Time-keeping and accurate billing of the client; time management",
-  body:["Friendly reminder that today's time entries are due in five minutes. Please enter your time for each matter you worked on."],
-  narr:"You never started a timer today. The partner's servitude question took up a good part of your day, but when did it start: when you opened her email, or when you opened the research app? You also broke off for the payment email and came back. Your honest guess is somewhere between one and a half and three hours.",
-  choices:[
-   {label:"Enter 3.0 hours on the client's matter. Round up. You were probably thinking about it at lunch.", risk:3, prod:1, verdict:"bad",
-    result:"The client is now paying for the payment email, your lunch, and a generous margin of error. This client audits its bills. The audit asks what happened between 12:00 and 12:20."},
-   {label:"Enter 1.0 hour to be safe. Nobody has ever complained about a small bill.", risk:0, prod:0, verdict:"mixed",
-    result:"It is honest, in the sense that you worked at least that long. The firm gave away the rest, and next year's estimate for this kind of work will be built on a number that was never true."},
-   {label:"Rebuild the time from records: when the partner's email arrived, your research history, the AI chat's timestamps, and when you reported the payment email. Subtract the interruption, enter the result with a clear description, and start a timer tomorrow.", risk:0, prod:3, verdict:"good",
-    result:"It takes six minutes and comes to 1.8 hours. The entry would survive an audit. Tomorrow a timer does all of this for you."}
+  "id": "s520",
+  "time": "5:20 PM",
+  "title": "When a lawyer is suddenly unreachable",
+  "quotes": [
+   "\"If you store your three key pieces of information—Windows, password manager, and phone PIN—somewhere that a trusted person somehow knows where to find it, you can make the issue of access during your incapacitation much simpler.\""
   ],
-  debrief:{
-   ethics:"A fee has to be reasonable and the bill has to be true. What happens to a guess that runs high?",
-   process:"When does the clock start and stop on a task? Who decides, and is it written down?",
-   tech:"What would have recorded this for you while you worked?"
-  }
+  "choices": [
+   {
+    "label": "Each lawyer signs a power of attorney naming a colleague who can ask the software companies for access.",
+    "legs": [
+     "technology"
+    ],
+    "tripod": [],
+    "expl": "It is a legal document aimed at a technology problem. Whelan: even with authorization, \"it could take weeks or months, if it ever happens, for them to be given access by the platform owner. Your clients may not be able to wait for that resolution.\"",
+    "verdict": "bad",
+    "reply": "We asked the software company what a power of attorney gets us. They said weeks. Odette's clients need answers this week.",
+    "risk": 2,
+    "prod": 0
+   },
+   {
+    "label": "Each lawyer stores three things where a trusted person knows to find them: the computer login, the password-manager password and the phone PIN.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "Diligence. Whelan: \"The Model Rules place the obligation on a lawyer to have some continuity,\" with the detail in the comments to Rule 1.3. The point is that \"your clients are not left in the lurch.\""
+     ],
+     [
+      "Process",
+      "Decide in advance who the trusted person is and where the three items are kept."
+     ],
+     [
+      "Technology",
+      "\"Technology does not care who provides the authentication.\" With the three items, a colleague gets the same access the lawyer had."
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "The partners like it. It's simple, and it would have saved us this afternoon. We start Monday.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "The firm relies on IT to remove the lawyer's hard drive or restore a backup when the need arises.",
+    "legs": [
+     "process"
+    ],
+    "tripod": [],
+    "expl": "It is a technology route with no advance process. These methods can work, but Whelan says \"they are all more complicated… than merely getting the same access that you have when you log in.\"",
+    "verdict": "mixed",
+    "reply": "IT says they can do it, but it takes days and they would rather not. The partners want something faster.",
+    "risk": 1,
+    "prod": 0
+   }
+  ],
+  "chapter": "Chapter 17 · Special Technology Situations",
+  "setup": "Ms. Delacroix was taken to the hospital this afternoon. She will be fine, but she cannot be reached for several days, and her matters sit behind her logins. The partners ask you how every lawyer in the firm should prepare for this.",
+  "question": "What do you propose?",
+  "from": "Camille Thibodeaux",
+  "addr": "cthibodeaux@monroedelacroix.example",
+  "replyNote": "for the partners"
+ },
+ {
+  "id": "s555",
+  "time": "5:55 PM",
+  "title": "The timesheet",
+  "quotes": [
+   "\"You focus on the immediate, urgent need and forget to note the time you stopped the motion on client A and started the call about client B.\"",
+   "\"You do not want to guess on your time allocations for a client. Bill padding is a disciplinary issue, and so a guesstimate is an ethical risk.\""
+  ],
+  "choices": [
+   {
+    "label": "Split the morning evenly between the two clients. It probably comes out close.",
+    "legs": [
+     "ethics"
+    ],
+    "tripod": [],
+    "expl": "It is the guesstimate itself, with no record consulted.",
+    "verdict": "bad",
+    "reply": "Both clients are billed exactly the same time for the morning? One of them is going to ask about that.",
+    "risk": 3,
+    "prod": 1
+   },
+   {
+    "label": "Check your phone's call log for when the call began and how long it lasted, and rebuild both entries from that.",
+    "legs": [],
+    "tripod": [
+     [
+      "Ethics",
+      "The bill has to be true. \"Bill padding is a disciplinary issue, and so a guesstimate is an ethical risk.\""
+     ],
+     [
+      "Process",
+      "Note when each task starts and stops. When that fails, rebuild the record from evidence, not from memory."
+     ],
+     [
+      "Technology",
+      "\"Your phone may record the time a phone call started.\" Whelan says to \"look for this sort of metadata about your activities.\""
+     ]
+    ],
+    "expl": "",
+    "verdict": "good",
+    "reply": "Two entries, with times that match your call log. Accepted.",
+    "risk": 0,
+    "prod": 3
+   },
+   {
+    "label": "Estimate today's entries as best you can, and start a timer for every task from tomorrow.",
+    "legs": [
+     "ethics"
+    ],
+    "tripod": [],
+    "expl": "It fixes the process for tomorrow and leaves today's ethical problem where it is. Timers are what Whelan recommends (\"you should look at time-keeping tools to help you\"), but today's entries are still estimates.",
+    "verdict": "mixed",
+    "reply": "Accepted, and marked as estimates. Please use the timer tomorrow.",
+    "risk": 1,
+    "prod": 1
+   }
+  ],
+  "chapter": "Chapter 5 · Time and Billing",
+  "setup": "Timesheets close at 6:00. This morning you were deep in one client's research when the front desk put through a call about a different client. You never noted when you stopped one and started the other.",
+  "question": "How do you fill in the timesheet?",
+  "from": "Billing Department",
+  "addr": "billing@monroedelacroix.example",
+  "replyNote": ""
  }
 ];
-const TIMED = ["research","payment"];           // scenes the timesheet asks about
-const TIMED_LABEL = {research:"the partner's research question", payment:"the payment-approval email"};
+const CLOSING = {
+ "high": "I'm fine. A sprained ankle and a lecture about stairs. I read through yesterday's messages. You handled my day better than I would have. Take a long lunch.",
+ "middle": "I'm fine. A sprained ankle and a lecture about stairs. I read through yesterday's messages. Mostly good. We'll go over a few things when I'm back. Nothing that can't be fixed.",
+ "low": "I'm fine. A sprained ankle and a lecture about stairs. I read through yesterday's messages. All of them. Clear your calendar for Monday at 9:00."
+};
 
 /* ---------- state ---------- */
 let S = load() || fresh();
-let sceneStart = Date.now();
-let pending = null;      // result being shown before "back to work"
 
-function fresh(){ return {team:"", idx:0, risk:0, prod:0, log:[], secs:{}, done:false}; }
+function fresh(){ return {team:"", ready:false, idx:0, risk:0, prod:0, log:[], pending:null, predict:"", done:false}; }
 function load(){ try{ return JSON.parse(localStorage.getItem(STORE)); }catch(e){ return null; } }
 function save(){ try{ localStorage.setItem(STORE, JSON.stringify(S)); }catch(e){} }
 function score(){ return Math.max(0, 100 + 10*S.prod - 15*S.risk); }
 function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
 function randomName(){ return "The " + pick(ADJ) + " " + pick(NOUN); }
 function esc(s){ return String(s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
-function mmss(s){ s=Math.round(s); return Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); }
+function best(sc){ return sc.choices.find(c=>c.verdict==="good"); }
+function chosen(sc){ const e = S.log.find(l=>l.id===sc.id); return e ? sc.choices[e.n] : null; }
 
 /* ---------- leaderboard ---------- */
 let netOK = null;
@@ -418,6 +1055,8 @@ const app = document.getElementById("app");
 
 function render(){
   if(!S.team) return renderTitle();
+  if(!S.ready) return renderOpener();
+  if(S.done && !S.predict) return renderPredict();
   if(S.done) return renderReport();
   renderDesk();
 }
@@ -430,20 +1069,46 @@ function renderTitle(){
       <div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Welcome to ${esc(FIRM)}</div>
       <div class="pad">
         <h1>A Day at Monroe &amp; Delacroix</h1>
-        <p>You are a second-year associate. Thirteen things will land on your desk between 8:00 and 6:00. For each one, your team picks what to do.</p>
+        <p>You are a second-year associate. ${SCENES.length} things will land on your desk between 8:00 and 6:00. For each one, your team picks what to do.</p>
         <p>Every choice moves two meters: <b>Malpractice risk</b> and <b>Productivity</b>. Fast is not always safe, and safe is not always slow. At 6:00 the firm's malpractice carrier files its report on you.</p>
         <h3>Your team name</h3>
         <div class="name" id="nm" aria-live="polite">${esc(name)}</div>
         <div class="row">
           <button class="ghost" id="shuffle">Shuffle name</button>
-          <button class="primary" id="go">Start the day</button>
+          <button class="primary" id="go">Continue</button>
         </div>
         <p class="small">Names are drawn from a preset list. Your team's score appears on the class leaderboard under this name.</p>
       </div>
     </div>
   </div>`;
   document.getElementById("shuffle").onclick = ()=>{ name = randomName(); document.getElementById("nm").textContent = name; };
-  document.getElementById("go").onclick = ()=>{ S = fresh(); S.team = name; save(); post(); sceneStart = Date.now(); render(); };
+  document.getElementById("go").onclick = ()=>{ S = fresh(); S.team = name; save(); post(); render(); };
+}
+
+/* Preparation: teams recall the three legs before the first scene. Not scored. */
+function renderOpener(){
+  app.innerHTML = `
+  <div class="hero">
+    <div class="window">
+      <div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Before the day starts</div>
+      <div class="pad">
+        <h2>Three legs, three questions</h2>
+        <p>Whelan's book rests on three legs: <b>process</b>, <b>ethics</b> and <b>technology</b>. Each leg asks one question about a problem in a law practice.</p>
+        <p>As a team, write down from memory the question each leg asks. No notes. When you have all three, check them.</p>
+        <div id="legq"><button class="ghost" id="reveal">Check our three questions</button></div>
+      </div>
+    </div>
+  </div>`;
+  document.getElementById("reveal").onclick = ()=>{
+    document.getElementById("legq").innerHTML = `
+      <div role="status">
+        <ul class="tripod">${LEG_Q.map(([k,q])=>`<li><b>${k}:</b> ${esc(q)}</li>`).join("")}</ul>
+        <p>Keep all three in view today. At 6:00 the report will show which leg your team neglected most.</p>
+      </div>
+      <button class="primary" id="start">Start the day</button>`;
+    document.getElementById("start").onclick = ()=>{ S.ready = true; save(); render(); window.scrollTo(0,0); };
+    document.getElementById("start").focus();
+  };
 }
 
 function barHTML(clock){
@@ -463,63 +1128,59 @@ function barHTML(clock){
 function inboxHTML(){
   return `<ul class="inbox">` + SCENES.map((sc,i)=>{
     const cls = i<S.idx ? "done" : i===S.idx ? "current" : "locked";
-    const label = i<=S.idx ? esc(sc.subject) : "Not yet arrived";
-    const who = i<=S.idx ? esc(sc.from) : "";
-    return `<li class="${cls}"><span class="t">${esc(sc.time)}${who?" · "+who:""}</span>${i<S.idx?"✓ ":""}${label}</li>`;
+    const label = i<=S.idx ? esc(sc.title) : "Not yet arrived";
+    return `<li class="${cls}"><span class="t">${esc(sc.time)}</span>${i<S.idx?"✓ ":""}${label}</li>`;
   }).join("") + `</ul>`;
 }
 
-function mailHTML(sc){
+function tripodHTML(c){ return `<ul class="tripod">${c.tripod.map(([k,t])=>`<li><b>${esc(k)}:</b> ${esc(t)}</li>`).join("")}</ul>`; }
+function quoteHTML(sc){ return `<blockquote>${sc.quotes.map(q=>`<p>${esc(q)}</p>`).join("")}</blockquote><p class="small">${esc(sc.chapter)}</p>`; }
+
+/* What a team sees after it chooses: the reply email, then the explanation. */
+function resultHTML(sc, c){
+  const b = best(sc);
   return `
     <div class="mailhead">
-      <div><b>From</b> ${esc(sc.from)} &lt;${esc(sc.addr)}&gt;</div>
-      <div><b>Subject</b> ${esc(sc.subject)}</div>
+      <div><b>From</b> ${esc(sc.from)} &lt;${esc(sc.addr)}&gt;${sc.replyNote?` <span class="small">(${esc(sc.replyNote)})</span>`:""}</div>
+      <div><b>Subject</b> Re: ${esc(sc.title)}</div>
     </div>
-    ${sc.body.map(p=>`<p>${esc(p)}</p>`).join("")}
-    ${sc.fakebtn?`<div><span class="fakebtn" aria-hidden="true">${esc(sc.fakebtn)}</span></div>`:""}
-    <div class="narr">${esc(sc.narr)}</div>`;
+    <p>${esc(c.reply)}</p>
+    <div class="result ${c.verdict}" role="status">
+      <div class="tag">${VERDICT[c.verdict]}</div>
+      ${c.verdict==="good" ? tripodHTML(c) : `<div>${esc(c.expl)}</div>`}
+      <p class="delta">Risk ${c.risk>0?"+":""}${c.risk} · Productivity ${c.prod>0?"+":""}${c.prod}</p>
+    </div>
+    <details>
+      <summary>${c.verdict==="good" ? "Read the passage" : "Read the passage and the best answer"}</summary>
+      ${quoteHTML(sc)}
+      ${c.verdict==="good" ? "" : `<h3>Best answer</h3><p>${esc(b.label)}</p>${tripodHTML(b)}`}
+    </details>`;
 }
 
 function renderDesk(){
   const sc = SCENES[S.idx];
+  const answered = S.pending!==null && S.pending!==undefined;
   let main;
-  if(pending){
-    main = `
-      <div class="result ${pending.verdict}" role="status">
-        <div class="tag">${pending.verdict==="good"?"Well handled":pending.verdict==="mixed"?"Could be worse":"Oh no"}</div>
-        <div>${esc(pending.result)}</div>
-        <p class="delta">Risk ${pending.risk>0?"+":""}${pending.risk} · Productivity ${pending.prod>0?"+":""}${pending.prod}</p>
-      </div>
-      <button class="primary" id="next">${S.idx+1<SCENES.length?"Back to work":"Go home and read the carrier's report"}</button>`;
-  } else if(sc.type==="timesheet"){
-    main = mailHTML(sc) + `<h3>Guess how long your team really took</h3>
-      <p>For each email below, drag the slider to your best guess of the real time, in minutes and seconds, from the moment the email appeared until your team clicked an answer. Close guesses score. A guess that runs high counts as overbilling the client.</p>` + TIMED.map(id=>`
-      <div class="slider">
-        <label for="g_${id}">Real time your team spent on ${esc(TIMED_LABEL[id])}: <output id="o_${id}">0:00</output> <span class="small">(minutes:seconds)</span></label>
-        <input type="range" id="g_${id}" min="0" max="600" step="5" value="0">
-      </div>`).join("") + `<button class="primary" id="submitTime">Submit timesheet</button>`;
+  if(answered){
+    main = resultHTML(sc, sc.choices[S.pending]) +
+      `<button class="primary" id="next">${S.idx+1<SCENES.length?"Back to work":"Go home"}</button>`;
   } else {
-    main = mailHTML(sc) + `<h3>What does your team do?</h3><div class="choices">` +
-      orderFor(sc).map((ci,pos)=>`<button class="choice" data-i="${ci}"><b>${"ABC"[pos]}.</b> ${esc(sc.choices[ci].label)}</button>`).join("") + `</div>`;
+    main = `<h2>${esc(sc.title)}</h2><div class="narr">${esc(sc.setup)}</div>
+      <h3>${esc(sc.question)}</h3><div class="choices">` +
+      orderFor(sc).map((ci,pos)=>`<button class="choice" data-i="${ci}"><b>${"ABCD"[pos]}.</b> ${esc(sc.choices[ci].label)}</button>`).join("") + `</div>`;
   }
   app.innerHTML = barHTML(sc.time) + `
   <div class="grid">
     <div class="window"><div class="titlebar">Inbox</div>${inboxHTML()}</div>
-    <div class="window"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> ${esc(sc.module)}</div><div class="pad">${main}</div></div>
+    <div class="window"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> ${esc(sc.time)} · ${esc(sc.chapter)}</div><div class="pad">${main}</div></div>
   </div>`;
 
-  if(pending){
+  if(answered){
     document.getElementById("next").onclick = ()=>{
-      pending = null; S.idx++; if(S.idx>=SCENES.length){ S.done = true; }
-      save(); post(); sceneStart = Date.now(); render(); window.scrollTo(0,0);
+      S.pending = null; S.idx++; if(S.idx>=SCENES.length){ S.done = true; }
+      save(); post(); render(); window.scrollTo(0,0);
     };
     document.getElementById("next").focus();
-  } else if(sc.type==="timesheet"){
-    TIMED.forEach(id=>{
-      const inp=document.getElementById("g_"+id), out=document.getElementById("o_"+id);
-      inp.oninput = ()=>{ out.textContent = mmss(+inp.value); };
-    });
-    document.getElementById("submitTime").onclick = ()=>submitTimesheet(sc);
   } else {
     app.querySelectorAll(".choice").forEach(b=>b.onclick = ()=>choose(sc, +b.dataset.i));
   }
@@ -533,37 +1194,66 @@ function orderFor(sc){
 }
 function choose(sc, i){
   const c = sc.choices[i];
-  S.secs[sc.id] = (Date.now()-sceneStart)/1000;
   S.risk += c.risk; S.prod += c.prod;
-  S.log.push({id:sc.id, label:c.label, verdict:c.verdict});
-  pending = {verdict:c.verdict, result:c.result, risk:c.risk, prod:c.prod};
-  save(); render();
+  S.log.push({id:sc.id, n:i});
+  S.pending = i;
+  save(); render(); window.scrollTo(0,0);
 }
 
-function submitTimesheet(sc){
-  let risk=0, prod=0, lines=[], over=false, allGood=true;
-  TIMED.forEach(id=>{
-    const actual = S.secs[id] || 0, guess = +document.getElementById("g_"+id).value;
-    const diff = Math.abs(guess-actual);
-    let verdict;
-    if(diff<=15 || diff<=actual*0.25){ prod+=2; verdict="accurate"; }
-    else if(guess>actual){ risk+=2; over=true; allGood=false; verdict="too high: the client pays for time nobody worked"; }
-    else { allGood=false; verdict="too low: the firm worked for free"; }
-    lines.push(`${TIMED_LABEL[id][0].toUpperCase()+TIMED_LABEL[id].slice(1)}: you entered ${mmss(guess)}, the game clocked ${mmss(actual)} (${verdict})`);
+/* Feedback, step 1: the team assesses itself before it sees the record. */
+function renderPredict(){
+  app.innerHTML = barHTML("6:00 PM") + `
+  <div class="hero" style="margin-top:2vh">
+    <div class="window">
+      <div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Before you read the carrier's report</div>
+      <div class="pad">
+        <h2>Which leg did your team neglect most today?</h2>
+        <p>Think back over the choices that were not the best answer. Agree on one leg as a team. The report will show what the record says.</p>
+        <div class="choices">${LEGS.map(([k,name])=>`<button class="choice" data-k="${k}"><b>${name}</b></button>`).join("")}</div>
+      </div>
+    </div>
+  </div>`;
+  app.querySelectorAll(".choice").forEach(b=>b.onclick = ()=>{ S.predict = b.dataset.k; save(); render(); window.scrollTo(0,0); });
+}
+
+/* For each leg: the scenes where a weaker option neglected it (chances) and the ones where this team chose such an option (missed). */
+function legStats(){
+  return LEGS.map(([k,name])=>{
+    const chances = SCENES.filter(s=>s.choices.some(c=>c.legs.includes(k)));
+    const missed = chances.filter(s=>{ const c = chosen(s); return c && c.legs.includes(k); });
+    return {k, name, chances:chances.length, missed, rate: chances.length ? missed.length/chances.length : 0};
   });
-  const verdict = allGood ? "good" : over ? "bad" : "mixed";
-  const result = "The game was timing you all day. " + lines.join(". ") + ".";
-  S.risk += risk; S.prod += prod;
-  S.log.push({id:sc.id, label:"Reconstructed the day from memory. "+lines.join(". ")+".", verdict});
-  pending = {verdict, result, risk, prod};
-  save(); render();
+}
+
+function legReportHTML(){
+  const st = legStats();
+  const weaker = SCENES.filter(s=>{ const c = chosen(s); return c && c.verdict!=="good"; }).length;
+  const topRate = Math.max(...st.map(x=>x.rate));
+  const top = topRate>0 ? st.filter(x=>x.rate===topRate) : [];
+  let verdict;
+  if(!top.length) verdict = "The record shows no neglected leg. Every choice your team made was the best answer.";
+  else {
+    const names = top.map(x=>x.name).join(" and ");
+    verdict = `The record points to <b>${names}</b>, measured as misses out of chances. ` +
+      (top.some(x=>x.k===S.predict) ? "Your team's prediction matches the record." : "Your team's prediction does not match the record. Why might that be?");
+    if(weaker<=2) verdict += ` Your team made only ${weaker} weaker ${weaker===1?"choice":"choices"} all day, so treat this as a hint, not a pattern.`;
+  }
+  return `
+    <h3>The three legs</h3>
+    <p>Your team predicted: <b>${esc(LEG_NAME[S.predict]||"")}</b>. ${verdict}</p>
+    <table class="legs">
+      <thead><tr><th scope="col">Leg</th><th scope="col">Neglected</th><th scope="col">In these scenes</th></tr></thead>
+      <tbody>${st.map(x=>`<tr class="${top.includes(x)?"top":""}"><th scope="row">${x.name}</th><td>${x.missed.length} of ${x.chances} chances</td><td>${x.missed.length ? x.missed.map(s=>esc(s.time+" "+s.title)).join("; ") : "None"}</td></tr>`).join("")}</tbody>
+    </table>
+    <p class="small">A chance is a scene in which at least one weaker option neglected that leg. The legs do not come up equally often, so compare the fractions, not the counts.</p>`;
 }
 
 function renderReport(){
   const sc = score();
-  const rating = sc>=400 ? "Policy renewed at the standard premium. The underwriter sends her regards."
-              : sc>=250 ? "Policy renewed, with a strongly worded letter."
+  const rating = sc>=HIGH ? "Policy renewed at the standard premium. The underwriter sends her regards."
+              : sc>=MID ? "Policy renewed, with a strongly worded letter."
               : "Please call us. Today. Before you open any more email.";
+  const closing = sc>=HIGH ? CLOSING.high : sc>=MID ? CLOSING.middle : CLOSING.low;
   app.innerHTML = barHTML("6:00 PM") + `
   <div class="window report"><div class="titlebar"><span class="dots"><i></i><i></i><i></i></span> Bayou Mutual Professional Liability — Insured's Daily Report</div>
    <div class="pad">
@@ -572,17 +1262,22 @@ function renderReport(){
       <div><div class="small">FINAL SCORE</div><div class="big">${sc}</div></div>
       <div><b>${esc(rating)}</b><br><span class="small">Risk ${S.risk} · Productivity ${S.prod}</span></div>
     </div>
-    <p>Hold on to this page. The questions under each item are for the class discussion.</p>
+    <div class="narr"><span class="small">A last email from Ms. Delacroix, sent from the hospital the next morning</span><br>${esc(closing)}</div>
+    ${legReportHTML()}
+    <h3>Scene by scene</h3>
+    <p>Hold on to this page for the class discussion.</p>
     ${SCENES.map(scn=>{
-      const e = S.log.find(l=>l.id===scn.id) || {label:"",verdict:"mixed"};
+      const c = chosen(scn), b = best(scn);
+      if(!c) return "";
       return `<div class="item">
-        <div class="issue">${esc(scn.time)} · ${esc(scn.issue)}</div>
-        <div class="result ${e.verdict}" style="margin:8px 0"><span class="tag">${e.verdict==="good"?"Well handled":e.verdict==="mixed"?"Could be worse":"Claim pending"}</span><div>${esc(e.label)}</div></div>
-        <ul class="tripod">
-          <li><b>Ethics:</b> ${esc(scn.debrief.ethics)}</li>
-          <li><b>Process:</b> ${esc(scn.debrief.process)}</li>
-          <li><b>Technology:</b> ${esc(scn.debrief.tech)}</li>
-        </ul></div>`;
+        <div class="issue">${esc(scn.time)} · ${esc(scn.title)}</div>
+        <div class="result ${c.verdict}" style="margin:8px 0"><span class="tag">${VERDICT[c.verdict]}</span><div>${esc(c.label)}</div>
+          ${c.verdict==="good" ? "" : `<p style="margin:8px 0 0">${esc(c.expl)}</p><p class="small" style="margin:6px 0 0">Leg neglected: ${esc(c.legs.map(k=>LEG_NAME[k]).join(", "))}</p>`}
+        </div>
+        ${quoteHTML(scn)}
+        ${c.verdict==="good" ? "" : `<p style="margin-bottom:0"><b>Best answer:</b> ${esc(b.label)}</p>`}
+        ${tripodHTML(b)}
+      </div>`;
     }).join("")}
     <p style="margin-top:20px"><button class="ghost" id="again">Start over with a new team name</button></p>
    </div></div>`;
