@@ -141,6 +141,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "This is the setup Whelan himself calls reasonable. The connection is encrypted, the storage is encrypted, and getting in takes both a password and a second factor. The summary gets done tonight and the file never leaves the firm's own system.",
+    "ftripod": [
+     [
+      "Ethics",
+      "The standard is reasonableness, under Rule 1.1 and its Comment 8. Whelan says this arrangement \"is reasonable.\""
+     ],
+     [
+      "Technology",
+      "Every part of it is ordinary: an encrypted connection, an encrypted host, a password and a second factor."
+     ],
+     [
+      "Process",
+      "The chapter does not cover one. For discussion: what should a firm's written rule for working from home say?"
+     ]
+    ],
     "reply": "The summary was in my inbox at 7:40. Thank you. I see you signed in from home the proper way.",
     "risk": 0,
     "prod": 3
@@ -153,6 +168,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It takes the ethical duty seriously but misreads it, and it gives up the technology altogether. Asked how to protect files from the NSA, Whelan answers: \"I do not think that having to secure client information so that an entity like the NSA cannot access it is reasonable.\" The duty is reasonable care, not perfect security.",
     "verdict": "mixed",
+    "full": "Staying late does keep the file safe, so the care for the client is right. What it gets wrong is the standard. The duty is reasonable care, and this answer holds itself to perfect security, which the rules do not ask for. It also gives up a tool the firm set up for exactly this night. Asked how to protect files from the NSA, Whelan answers: \"I do not think that having to secure client information so that an entity like the NSA cannot access it is reasonable.\"",
+    "ftripod": [],
+    "better": "sign in from home to the firm's encrypted cloud storage, with your password and multifactor authentication.",
     "reply": "You stayed until 11:00? The summary is good, but the firm's cloud storage exists so that you can go home. Use it next time.",
     "risk": 0,
     "prod": 0
@@ -165,6 +183,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It reaches for a convenient technology and ignores the duty. Whelan calls this \"unreasonable,\" because the client's file \"may be exposed to other people.\"",
     "verdict": "bad",
+    "full": "The summary would be fast, and the client's file would be sitting on someone else's system with no promise about who sees it. Speed is the only thing this answer weighs. Whelan uses this very example: \"It would be unreasonable to upload a client file to an open web generative AI application, since your client's file may be exposed to other people.\"",
+    "ftripod": [],
+    "better": "sign in from home to the firm's encrypted cloud storage, with your password and multifactor authentication.",
     "reply": "The summary is fine. How did you make it? Please tell me the client's file is not sitting in a chatbot. Come see me.",
     "risk": 4,
     "prod": 2
@@ -195,6 +216,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It gestures at the ethical duty and changes neither the process nor the technology. Whelan: \"most confidentiality blocks are placed below the confidential information, so it has been exposed before the warning is visible,\" and \"there is no way for the lawyer to enforce that confidentiality.\"",
     "verdict": "bad",
+    "full": "A notice does nothing to stop the email from reaching the wrong person. It only asks that person to behave well after reading it, and it asks too late. Whelan: \"Email signature blocks are not a way to mitigate the risk of sending the email to the wrong recipient.\" He gives two reasons: \"most confidentiality blocks are placed below the confidential information, so it has been exposed before the warning is visible,\" and \"there is no way for the lawyer to enforce that confidentiality.\"",
+    "ftripod": [],
+    "better": "turn off auto-complete, and write the message first and address it last.",
     "reply": "The wrong Smith would have read the settlement figures before reaching the notice. What else do you have?",
     "risk": 2,
     "prod": 1
@@ -207,6 +231,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is a technology answer to a process problem. A new program might help, but Whelan says this error \"can probably be solved without new technology,\" and he turns to \"a new email application\" only if the current one cannot disable auto-complete.",
     "verdict": "mixed",
+    "full": "A warning before a message leaves the firm might have caught this email, so the instinct to prevent the mistake is right. What it gets wrong is the order: it spends money before asking whether the firm's own habits or its current software can solve the problem. Whelan says this error \"can probably be solved without new technology.\" He turns to \"a new email application\" only if the current one cannot turn auto-complete off, and Outlook can. The paralegal would also still address messages the same way, with a warning added on top.",
+    "ftripod": [],
+    "better": "turn off auto-complete, and write the message first and address it last.",
     "reply": "Maybe. Before you get me a price, find out whether Outlook can already do this. I don't want to buy something we own.",
     "risk": 0,
     "prod": 1
@@ -230,6 +257,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "This fixes the step where the mistake happened. The email went astray when Outlook filled in an address from a few typed letters. Turning that feature off removes the guess, and addressing the message last makes choosing the recipient a deliberate final step.",
+    "ftripod": [
+     [
+      "Process",
+      "Write first, address last. Whelan says the change \"does not require any new technology.\""
+     ],
+     [
+      "Technology",
+      "It uses a setting the firm already owns. Whelan calls this \"a good example of how your technology already supports an improvement.\""
+     ],
+     [
+      "Ethics",
+      "It protects what was at stake. \"Lawyers have violated confidentiality by sending emails to the wrong person and have also ceded lawyer-client privilege.\""
+     ]
+    ],
     "reply": "It costs nothing and we can start today. Send the instructions to everyone. I'll turn mine off first.",
     "risk": 0,
     "prod": 3
@@ -259,6 +301,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It follows no process at all, and it invites exactly the \"disqualifying information\" Rule 1.18 is about.",
     "verdict": "bad",
+    "full": "More information does help a lawyer evaluate a case, and that is the trap. She is not a client yet. What she tells you before the conflicts check may be exactly the \"disqualifying information\" Rule 1.18 is about, and a lawyer who receives it can be barred from representing an adverse client in the same or a substantially related matter. Whelan: \"you want to be careful how much you learn.\" Letting her finish follows no process at all.",
+    "ftripod": [],
+    "better": "stop her, warn her not to share details yet, and ask only the checklist questions.",
     "reply": "You have four pages of notes from someone who is not a client yet. Do not tell me what is in them. You may have to stay off this matter entirely.",
     "risk": 3,
     "prod": 1
@@ -271,6 +316,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It honors the ethical concern but leaves the process unfinished. The goal is \"enough—but not too much,\" and a conflicts check cannot run without knowing who else is involved.",
     "verdict": "mixed",
+    "full": "Stopping her is right, because it keeps the firm from hearing too much. But a name and a phone number are too little. A conflicts check cannot run without knowing who else is involved, and this answer never asks who is on the other side. Whelan's target is \"enough—but not too much.\" This answer avoids the second half and misses the first.",
+    "ftripod": [],
+    "better": "stop her, warn her not to share details yet, and ask only the checklist questions.",
     "reply": "A name and a phone number? I can't check conflicts against that. Call her back and find out who is on the other side. Only that.",
     "risk": 0,
     "prod": 1
@@ -294,6 +342,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "It gets the firm enough to run a conflicts check and nothing more. Stopping her keeps the firm from learning what it cannot unlearn. The three questions give the check what it needs: who she is, who is on the other side, and what kind of matter it is.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Rule 1.18. A lawyer who receives \"disqualifying information\" from a prospective client can be barred from representing an adverse client in the same or a substantially related matter."
+     ],
+     [
+      "Process",
+      "A checklist \"that limits what information is sought,\" with \"specific warnings for a prospective client not to overshare,\" and a clear point at which there is enough for the conflicts check."
+     ],
+     [
+      "Technology",
+      "The same checklist can be an online intake form. Whelan notes that a practice management system can put the answers straight into the firm's contact records, which saves entering them twice."
+     ]
+    ],
     "reply": "Good. Three answers and a warning is all I need at this point. Run the conflicts check and we'll talk at 10:00.",
     "risk": 0,
     "prod": 3
@@ -322,6 +385,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It trusts the technology and skips the process. The spreadsheet is only as good as its last update, and this is the exact failure in the passage: the name changed in one place and not the other.",
     "verdict": "bad",
+    "full": "The spreadsheet is the right place to look, and it is only as good as its last update. Here it was never updated: her name changed in the contacts and not in the conflicts data. This is the failure Whelan describes: \"You may have updated your contacts record with someone's new last name—and congratulated them on their marriage—but failed to make the update in your conflicts checking data, creating risk that, in the future, you will miss the name change and their new relationship.\" Reporting \"we're clear\" turns a gap in the records into a decision to take the case.",
+    "ftripod": [],
+    "better": "not yet; search the previous name, and make the two records match.",
     "reply": "We're clear? I was at her wedding in June. Look again, under Smith.",
     "risk": 4,
     "prod": 1
@@ -345,18 +411,34 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "An empty result means only that the spreadsheet has no \"Errol.\" The contacts note says she was Leslie Smith until June, so the spreadsheet may know her under that name. Searching the earlier name answers today's question, and making the two records match keeps the gap from opening again.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Rules 1.7, 1.9 and 1.18. Whelan calls them \"warnings for you to be sure you know what impact your prospective client's case may have on your current and former clients.\""
+     ],
+     [
+      "Process",
+      "Search previous names, because \"knowing previous names or even aliases will be important,\" then bring the records back into step. Whelan: \"You will also want to have a way to validate or verify, periodically, that the data is the same in both systems.\""
+     ],
+     [
+      "Technology",
+      "The firm keeps contacts in one tool and conflicts data in another. Whelan's goal is \"a single source of truth,\" because every extra copy \"will create new risk.\""
+     ]
+    ],
     "reply": "You found her under Smith? Good catch. Send me the record, and fix the spreadsheet today.",
     "risk": 0,
     "prod": 3
    },
    {
     "label": "\"We have a conflict. Leslie Errol is in the firm's contacts.\"",
-    "legs": [
-     "technology"
-    ],
+    "legs": [],
     "tripod": [],
     "expl": "It takes the ethical risk seriously and tells the partner the firm has a relationship. But it overstates what a search can show. Whelan: the check \"will warn you about the existence of a risk\" and \"is not dispositive of whether you can take on a client.\"",
     "verdict": "mixed",
+    "full": "Telling the partner is right: the firm does know Leslie Errol, and Ms. Delacroix should hear that before anyone takes the case. But a name in the contacts list shows a relationship, and a relationship is not yet a conflict. The answer reports a conclusion the search cannot support. Whelan: the check \"will warn you about the existence of a risk\" and \"is not dispositive of whether you can take on a client.\" The next step is to find her conflicts record, under Smith.",
+    "ftripod": [],
+    "better": "not yet; search the previous name, and make the two records match.",
     "reply": "Being in my contacts makes her someone I sent a card to. What does the conflicts record say? Bring me that and I'll decide.",
     "risk": 0,
     "prod": 1
@@ -386,6 +468,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is a guess, with no rule read and no tool used. Whelan says a Saturday deadline \"often\" moves to the following Monday. Often is not always.",
     "verdict": "bad",
+    "full": "Monday may well be the right date. The problem is how you got there: no rule read, no tool used, no one asked. Whelan says a Saturday deadline \"often\" moves to the following Monday, and often is not always. \"You should never guess on a filing date.\" If this guess is wrong, the response is late.",
+    "ftripod": [],
+    "better": "read the court's rule, calculate the date, call the clerk to confirm it, and put it on the shared calendar.",
     "reply": "Why Monday? Which rule says so? If you can't tell me, we don't know the date yet.",
     "risk": 3,
     "prod": 1
@@ -398,6 +483,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It uses the right technology and stops there. Whelan favors templates, because \"manual entry introduces the possibility of error.\" But a template is only as good as the rules loaded into it, and the Practice Pointer still says to be certain and confirm.",
     "verdict": "mixed",
+    "full": "The template is the right tool. Whelan favors it because \"manual entry introduces the possibility of error.\" What is missing is the check. A template is only as good as the rules loaded into it, and if those are wrong, nothing warns you. Whelan's pointer covers this case: \"Be certain and, if nothing else, call the court to confirm the date once you have done your calculation.\"",
+    "ftripod": [],
+    "better": "read the court's rule, calculate the date, call the clerk to confirm it, and put it on the shared calendar.",
     "reply": "The template is usually right. Call the clerk anyway. I don't put \"usually\" on the calendar.",
     "risk": 1,
     "prod": 2
@@ -421,6 +509,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "Every step replaces a guess with something checked. The rule tells you how to count, the clerk confirms the result, and the shared calendar puts the date where the whole firm can see it.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Rule 1.3, diligence and promptness. Whelan adds that missed deadlines \"can lead to legal malpractice claims.\""
+     ],
+     [
+      "Process",
+      "Never guess. How to count \"will be spelled out in court or other rules,\" and the last step is to \"call the court to confirm the date.\""
+     ],
+     [
+      "Technology",
+      "A shared calendar for court dates, \"so that everyone has a shared view of the law practice's critical dates.\" A rules-based template can do the calculation."
+     ]
+    ],
     "reply": "Confirmed with the clerk and on the shared calendar. That is how it's done. Thank you.",
     "risk": 0,
     "prod": 3
@@ -449,6 +552,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It understands the technology and skips the process. The distinction is real: publishers' curated collections \"should reduce the likelihood of fabricated results.\" Reducing is not eliminating.",
     "verdict": "mixed",
+    "full": "The distinction it draws is real. A publisher's tool works from a curated collection, and Whelan says that \"should reduce the likelihood of fabricated results.\" Reducing is not eliminating. This answer treats where the tool came from as a substitute for reading what it cited. Whelan says a lawyer using these tools must be vigilant \"that the documents retrieved and cited are real documents.\"",
+    "ftripod": [],
+    "better": "open each cited authority, confirm it exists and says what the answer claims, and tell her what you verified.",
     "reply": "Did you open the cases? All three? I'm about to repeat this to a client. Check them and call me before 2:00.",
     "risk": 2,
     "prod": 2
@@ -472,6 +578,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "The answer is only as good as the authorities under it, and opening them is the only way to know. You confirm each one exists and says what the AI claims, and you tell Ms. Delacroix what you checked, so she knows what she can repeat to a client at 2:00.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Competence (Rule 1.1) and candor to the court (Rule 3.3). Whelan: \"Lawyers who submit confabulations to the court in the form of non-existent cases and citations are failing to understand and use their legal research technology competently.\""
+     ],
+     [
+      "Process",
+      "Verify before anything leaves your desk. Lawyers \"continue to have the imperative to validate their research, just as they would have done with any other legal research.\""
+     ],
+     [
+      "Technology",
+      "Knowing which kind of AI produced the answer matters, but it does not replace the check."
+     ]
+    ],
     "reply": "Two authorities solid, one doubtful, and you told me which is which. That is what I needed for the 2:00 call.",
     "risk": 0,
     "prod": 3
@@ -484,6 +605,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It uses one technology to check another. Whelan says general AI tools \"may not restrict their results or outputs to legal information or even to reality.\" Two tools agreeing does not show that a cited case exists.",
     "verdict": "bad",
+    "full": "Two AI tools agreeing feels like confirmation, and it is not. Neither tool opened the cases, so their agreement does not show that a cited case exists. Whelan says general AI tools \"may not restrict their results or outputs to legal information or even to reality.\" The answer also sends the partner's question to a second tool without asking what that question reveals.",
+    "ftripod": [],
+    "better": "open each cited authority, confirm it exists and says what the answer claims, and tell her what you verified.",
     "reply": "Two chatbots agreeing is not research. And what exactly did you paste into the second one? Check the actual cases. Quickly.",
     "risk": 3,
     "prod": 1
@@ -512,6 +636,9 @@ const SCENES = [
     "tripod": [],
     "expl": "This is Whelan's own fact pattern. The assistant signs in to save the lawyer time, and \"a few days later, the law firm gets a ransom request to recover client files that have been exfiltrated using Lawyer's username and password.\"",
     "verdict": "bad",
+    "full": "It feels helpful: she is busy and the invitation looks routine. But an unexpected link that opens a sign-in page is asking for her username and password, and you would be the one typing them in. This is Whelan's own fact pattern. The assistant signs in to save the lawyer time, and \"a few days later, the law firm gets a ransom request to recover client files that have been exfiltrated using Lawyer's username and password.\"",
+    "ftripod": [],
+    "better": "leave the email, tell her about it, and ask the firm for your own access to her mailbox.",
     "reply": "You signed in as me? To what? I never asked anyone for a Google Drive. Call IT right now and tell them exactly what you typed.",
     "risk": 4,
     "prod": 1
@@ -524,6 +651,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It avoids today's trap and changes nothing else. The process that created the risk is still in place: you still hold her password.",
     "verdict": "mixed",
+    "full": "Leaving the email alone avoids the trap, and that is the most important thing you can do today. But Ms. Delacroix does not know the email came, and you still hold her password, so the next convincing email meets the same risk. Whelan: \"Passwords should not be shared. You are the only person who needs access to your passwords.\"",
+    "ftripod": [],
+    "better": "leave the email, tell her about it, and ask the firm for your own access to her mailbox.",
     "reply": "I saw the email, and I'm glad you left it alone. Next time, tell me.",
     "risk": 1,
     "prod": 1
@@ -547,6 +677,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "It handles today's email and the arrangement that made the email dangerous. You leave the link alone, the person it was addressed to hears about it, and you stop carrying her password.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Supervision. Chapter 12 starts from \"Model Rule 5.3 and your duty to supervise non-lawyers who you employ,\" and the manual names the issues in a case like this one: \"delegation of oversight, the implications of password sharing or not observing least access.\""
+     ],
+     [
+      "Process",
+      "The firm needs a set way for someone to help with a lawyer's inbox that does not depend on borrowing the lawyer's identity."
+     ],
+     [
+      "Technology",
+      "Separate access for each person. Whelan: \"give them their own access with their own password.\""
+     ]
+    ],
     "reply": "Thank you for not clicking. I have never heard of an alumni drive. And you're right about the password. I should not have given it to you. I'll call IT.",
     "risk": 0,
     "prod": 3
@@ -575,6 +720,9 @@ const SCENES = [
     "tripod": [],
     "expl": "\"Better than nothing,\" but \"the least desirable method.\"",
     "verdict": "mixed",
+    "full": "Any second step beats none, and Whelan calls text-message codes \"better than nothing.\" He also calls them \"the least desirable method of authentication.\" With two better methods available, this is the weakest choice that still counts.",
+    "ftripod": [],
+    "better": "a hardware key.",
     "reply": "Text messages? The front desk has keys sitting on the counter. Better than nothing, I suppose.",
     "risk": 1,
     "prod": 2
@@ -587,6 +735,9 @@ const SCENES = [
     "tripod": [],
     "expl": "When the hardware option is not offered, \"using a multi-factor authenticator app is the next best option.\" Here it is offered.",
     "verdict": "mixed",
+    "full": "An app is a sound choice, and Whelan ranks it second: where a hardware key is not offered, \"using a multi-factor authenticator app is the next best option.\" Here the keys are at the front desk. The app's weakness is the code itself: \"Even one-time codes, generated by an app on your phone, are something you can disclose by mistake.\"",
+    "ftripod": [],
+    "better": "a hardware key.",
     "reply": "An app is fine. The front desk says the keys are better and they're free, for what it's worth.",
     "risk": 0,
     "prod": 2
@@ -610,6 +761,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "A hardware key is the one method here that cannot be given away by mistake. A code can be read out or typed in the wrong place. A key has to be in or next to your device.",
+    "ftripod": [
+     [
+      "Technology",
+      "\"The best method is to use a hardware key.\" If someone sends a convincing fake email, there is no code to give away."
+     ],
+     [
+      "Ethics",
+      "Whelan's standard is reasonableness: a password and a second factor \"are what I would consider reasonable for a lawyer protecting confidential and private client data.\""
+     ],
+     [
+      "Process",
+      "Chapter 12 does not cover one. Chapter 17 supplies a piece: keep \"a copy of your offline authentication codes,\" because a lost device can lock you out of client matters. For discussion: who at the firm decides which method everyone uses?"
+     ]
+    ],
     "reply": "I hear you took a hardware key. IT tells me I have to get one too. Fine.",
     "risk": 0,
     "prod": 3
@@ -622,6 +788,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It relies on one technology and ignores the standard. Whelan: \"Anything short of this creates a potential risk that seems unreasonable, given the widespread availability of multi-factor authentication.\"",
     "verdict": "bad",
+    "full": "A long password used nowhere else is good practice, and it is still one factor. If it is ever stolen, nothing stands behind it. Whelan's standard is a password and a second factor together: \"Anything short of this creates a potential risk that seems unreasonable, given the widespread availability of multi-factor authentication.\"",
+    "ftripod": [],
+    "better": "a hardware key.",
     "reply": "IT tells me you skipped the second step. Everyone in this firm uses one. Go back and set it up today.",
     "risk": 3,
     "prod": 1
@@ -650,6 +819,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It knows one feature of the technology and misses the better one. The body text ends up at 12-point, but so does everything else. Whelan raises this exact problem: \"what if you had used additional font sizes: headings and so on?\"",
     "verdict": "mixed",
+    "full": "Select-all does get the body text to 12-point, and quickly. It also sets everything else to 12-point, headings included, so the headings now have to be repaired before the brief can be filed. Whelan raises exactly this: \"But what if you had used additional font sizes: headings and so on?\" The answer knows one feature of Word and misses the one built for this job.",
+    "ftripod": [],
+    "better": "modify the Normal style from 11-point to 12-point.",
     "reply": "The body text is 12-point now. So are all the headings. Please fix them before this goes to the court.",
     "risk": 0,
     "prod": 1
@@ -673,6 +845,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "The brief was built with styles, so the size of the body text is set in one place. Change the Normal style and every body paragraph follows. The headings keep the sizes they already have.",
+    "ftripod": [
+     [
+      "Technology",
+      "Modify the Normal style, \"and the entire document's normal text will reformat to the new font size.\""
+     ],
+     [
+      "Process",
+      "Apply styles consistently while drafting and fix the look afterward, in one place."
+     ],
+     [
+      "Ethics",
+      "None, and Whelan says so: \"There are no professional rules that have to do with document automation, which is a process.\" What governs here is the court's formatting rule. This is one of the manual's \"productivity\" issues, not a risk issue."
+     ]
+    ],
     "reply": "Fixed in a minute, and the headings still look right. Filed. Thank you.",
     "risk": 0,
     "prod": 3
@@ -685,6 +872,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It abandons the process the document was built on. Whelan: \"Do not go through your document, apply a style, and then manually change the look and feel.\"",
     "verdict": "bad",
+    "full": "It would work eventually. It is slow, it invites a missed paragraph, and it abandons the styles the document was built on, so the next formatting fix has to be done by hand too. Whelan: \"Do not go through your document, apply a style, and then manually change the look and feel.\"",
+    "ftripod": [],
+    "better": "modify the Normal style from 11-point to 12-point.",
     "reply": "It has been forty minutes and you're on page nine of thirty. There is a faster way. Ask Camille to show you styles.",
     "risk": 0,
     "prod": 0
@@ -715,6 +905,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It addresses none of the three. The Boudreaux letter's metadata \"is brought forward as well,\" and the new client receives it in an editable file.",
     "verdict": "bad",
+    "full": "It is the fastest route and it carries the most risk. Whelan: \"Metadata travels with the document, so when you re-use a document or create a second version of it, the original metadata is brought forward as well.\" A Word file hands the new client that metadata in a form she can open and edit. This is the risk Whelan names: \"you intermingle client data.\"",
+    "ftripod": [],
+    "better": "start from the blank template, fill it in, and email it as a PDF.",
     "reply": "The new client just asked me who Marie Boudreaux is. She found the name in the file you sent. Come to my office.",
     "risk": 4,
     "prod": 1
@@ -727,6 +920,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It applies the technology fix and keeps the risky process. The PDF removes \"tracked changes or comments,\" but Whelan notes it still retains \"some of the basic metadata (author, title, creation date),\" and the letter still began as another client's document.",
     "verdict": "mixed",
+    "full": "The PDF is the right way to send it: it removes \"tracked changes or comments.\" But the letter still began as Marie Boudreaux's. Whelan notes that a PDF still retains \"some of the basic metadata (author, title, creation date),\" so a title naming another client would travel with it. The format was fixed and the starting point was not.",
+    "ftripod": [],
+    "better": "start from the blank template, fill it in, and email it as a PDF.",
     "reply": "The PDF was the right call. But check the document title she will see. If it says Boudreaux, we have a problem. Use the template next time.",
     "risk": 2,
     "prod": 2
@@ -750,6 +946,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "A template has never held another client's information, so there is nothing to carry over. Sending the finished letter as a PDF then removes most of what a Word file would reveal about how it was made.",
+    "ftripod": [
+     [
+      "Ethics",
+      "Confidentiality. The risk Whelan names is that \"you intermingle client data.\""
+     ],
+     [
+      "Process",
+      "Start every new document from a template, which is \"empty of client- or case-specific information,\" and send finished documents as PDFs."
+     ],
+     [
+      "Technology",
+      "Metadata is the part of the document you do not see in the print view. Saving as PDF \"will eliminate much of the metadata you would not want to share.\""
+     ]
+    ],
     "reply": "Clean letter, right client, sent as a PDF. She signed it before she sat down.",
     "risk": 0,
     "prod": 3
@@ -778,6 +989,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It uses the technology without understanding it. The marks sit \"on top of the document,\" and the text underneath remains.",
     "verdict": "bad",
+    "full": "The page looks redacted and is not. A black box sits on top of the text, and the text is still in the file. Whelan: \"you are merely obscuring the visibility of the information. The text remains a part of the document, and you risk someone being able to access it.\" In this exhibit that is a Social Security number, a bank account number, and a child's name and date of birth, in a court filing.",
+    "ftripod": [],
+    "better": "make a copy of the PDF and use the PDF editor's redaction tool on the copy.",
     "reply": "I selected the page and pasted it into an email. The Social Security number came through. I'm calling the clerk now.",
     "risk": 4,
     "prod": 1
@@ -790,6 +1004,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is a sound process that does without the technology. Whelan calls the marker method \"old-fashioned, and yet still reliable,\" because the ink becomes part of the page. He also says: \"This is a lot of work.\"",
     "verdict": "mixed",
+    "full": "It works. Once the page is printed, marked and scanned, the ink is part of the page and there is no text underneath. Whelan calls the method \"old-fashioned, and yet still reliable.\" He also says: \"This is a lot of work.\" The answer protects the information and ignores a tool that does the same job on screen.",
+    "ftripod": [],
+    "better": "make a copy of the PDF and use the PDF editor's redaction tool on the copy.",
     "reply": "That works. It took an hour and the file is enormous, but it works. Let me show you the redaction tool tomorrow.",
     "risk": 0,
     "prod": 0
@@ -813,6 +1030,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "A redaction tool takes the text out of the file, so nothing remains under the mark to recover. Working on a copy keeps the original intact for the firm.",
+    "ftripod": [
+     [
+      "Technology",
+      "A redaction function \"removes the text or other document elements from the document.\""
+     ],
+     [
+      "Process",
+      "Work on a copy. Whelan: \"redact a copy of the original document. Otherwise you will permanently obscure the original.\""
+     ],
+     [
+      "Ethics",
+      "The chapter cites no rule. It names the harm: a failed redaction \"may end up with you inadvertently disclosing information.\" For discussion: which duty is that, and who is hurt?"
+     ]
+    ],
     "reply": "Filed, and the original is untouched. I tried copying text from the redacted pages and got nothing. Thank you.",
     "risk": 0,
     "prod": 3
@@ -842,6 +1074,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It has neither a process nor a tool. An unprotected folder is what gets \"swept up in a periodic but perhaps unplanned clean up of a storage drive.\"",
     "verdict": "bad",
+    "full": "Nothing more will be added to the folder, and the file is still not safe. Left among the active matters, it has no protection and no closing routine has run. Whelan warns what happens to files like this: documents \"disappear before they are supposed to, swept up in a periodic but perhaps unplanned clean up of a storage drive.\"",
+    "ftripod": [],
+    "better": "move it to Closed Matters in the firm's document system, where protection and retention run automatically.",
     "reply": "IT cleans up that drive every few months. If Guidry is still sitting with the active matters, it could be swept up. Please move it.",
     "risk": 2,
     "prod": 1
@@ -854,6 +1089,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is the right process without the technology. Whelan allows it: \"you can also have a checklist that reflects your closing file process and perform the steps manually.\" It works only as long as someone remembers every step, every time.",
     "verdict": "mixed",
+    "full": "The steps are right, and Whelan allows this route: \"you can also have a checklist that reflects your closing file process and perform the steps manually.\" Its weakness is that it depends on someone remembering every step, every time. Whelan: \"Unless you have staff to help you, you will need to look for ways to automate a lot of these processes.\"",
+    "ftripod": [],
+    "better": "move it to Closed Matters in the firm's document system, where protection and retention run automatically.",
     "reply": "Thanks, that does it. Just remember the checklist only works if we do every step, every time.",
     "risk": 1,
     "prod": 1
@@ -877,6 +1115,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "Closing a file means protecting it and starting the clock on how long it is kept. The document system does both when the folder moves, the same way for every matter, with nothing left for anyone to remember.",
+    "ftripod": [
+     [
+      "Technology",
+      "\"The automation piece is key.\" A document management system \"can apply that sort of protection automatically.\""
+     ],
+     [
+      "Process",
+      "A closing routine that runs the same way for every matter."
+     ],
+     [
+      "Ethics",
+      "The chapter cites no rule. It says closed files are kept for a limitations period \"or for professional ethics reasons,\" and that \"you will need to be able to distinguish what belongs to you and what belongs to them.\" For discussion: what does the firm owe a former client who asks for the file?"
+     ]
+    ],
     "reply": "Closed and locked. One less thing to think about.",
     "risk": 0,
     "prod": 3
@@ -905,6 +1158,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is a legal document aimed at a technology problem. Whelan: even with authorization, \"it could take weeks or months, if it ever happens, for them to be given access by the platform owner. Your clients may not be able to wait for that resolution.\"",
     "verdict": "bad",
+    "full": "A power of attorney is a lawyer's instinct, and it answers a legal question when the obstacle is a login. A software company that receives the document still has to decide what to do with it. Whelan: even with authorization, \"it could take weeks or months, if it ever happens, for them to be given access by the platform owner. Your clients may not be able to wait for that resolution.\"",
+    "ftripod": [],
+    "better": "each lawyer stores the computer login, the password-manager password and the phone PIN where a trusted person knows to find them.",
     "reply": "We asked the software company what a power of attorney gets us. They said weeks. Odette's clients need answers this week.",
     "risk": 2,
     "prod": 0
@@ -928,6 +1184,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "The colleague who steps in needs to get into the lawyer's computer, password manager and phone. With those three, everything else opens the way it does for the lawyer. Nothing has to be requested from a software company or rebuilt by IT.",
+    "ftripod": [
+     [
+      "Technology",
+      "\"Technology does not care who provides the authentication.\" With the three items, a colleague gets the same access the lawyer had."
+     ],
+     [
+      "Process",
+      "Decide in advance who the trusted person is and where the three items are kept."
+     ],
+     [
+      "Ethics",
+      "Diligence. Whelan: \"The Model Rules place the obligation on a lawyer to have some continuity,\" with the detail in the comments to Rule 1.3. The point is that \"your clients are not left in the lurch.\""
+     ]
+    ],
     "reply": "The partners like it. It's simple, and it would have saved us this afternoon. We start Monday.",
     "risk": 0,
     "prod": 3
@@ -940,6 +1211,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is a technology route with no advance process. These methods can work, but Whelan says \"they are all more complicated… than merely getting the same access that you have when you log in.\"",
     "verdict": "mixed",
+    "full": "IT can sometimes get there by pulling a drive or restoring a backup, so the answer is not empty. But it is a plan to improvise once the emergency has arrived, with nothing decided in advance. Whelan says of these methods that \"they are all more complicated… than merely getting the same access that you have when you log in.\"",
+    "ftripod": [],
+    "better": "each lawyer stores the computer login, the password-manager password and the phone PIN where a trusted person knows to find them.",
     "reply": "IT says they can do it, but it takes days and they would rather not. The partners want something faster.",
     "risk": 1,
     "prod": 0
@@ -969,6 +1243,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It is the guesstimate itself, with no record consulted.",
     "verdict": "bad",
+    "full": "It may come out close, and that is all that can be said for it. An even split is a guess with a tidy shape, and no record was consulted to make it. Whelan: \"Bill padding is a disciplinary issue, and so a guesstimate is an ethical risk.\"",
+    "ftripod": [],
+    "better": "check your phone's call log and rebuild both entries from it.",
     "reply": "Both clients are billed exactly the same time for the morning? One of them is going to ask about that.",
     "risk": 3,
     "prod": 1
@@ -992,6 +1269,21 @@ const SCENES = [
     ],
     "expl": "",
     "verdict": "good",
+    "full": "The record you failed to keep already exists somewhere else. The call log shows when the call began and how long it ran, which tells you when the research stopped and how much time belongs to the second client. Both entries now rest on evidence.",
+    "ftripod": [
+     [
+      "Ethics",
+      "The bill has to be true. \"Bill padding is a disciplinary issue, and so a guesstimate is an ethical risk.\""
+     ],
+     [
+      "Process",
+      "Note when each task starts and stops. When that fails, rebuild the record from evidence, not from memory."
+     ],
+     [
+      "Technology",
+      "\"Your phone may record the time a phone call started.\" Whelan says to \"look for this sort of metadata about your activities.\""
+     ]
+    ],
     "reply": "Two entries, with times that match your call log. Accepted.",
     "risk": 0,
     "prod": 3
@@ -1004,6 +1296,9 @@ const SCENES = [
     "tripod": [],
     "expl": "It fixes the process for tomorrow and leaves today's ethical problem where it is. Timers are what Whelan recommends (\"you should look at time-keeping tools to help you\"), but today's entries are still estimates.",
     "verdict": "mixed",
+    "full": "Starting a timer tomorrow is what Whelan recommends: \"you should look at time-keeping tools to help you.\" It fixes every day after this one. Today's entries are still estimates, and two clients will be billed on them. Whelan: \"You do not want to guess on your time allocations for a client.\" A record that would settle the question is in your phone.",
+    "ftripod": [],
+    "better": "check your phone's call log and rebuild both entries from it.",
     "reply": "Accepted, and marked as estimates. Please use the timer tomorrow.",
     "risk": 1,
     "prod": 1
@@ -1134,6 +1429,9 @@ function inboxHTML(){
 }
 
 function tripodHTML(c){ return `<ul class="tripod">${c.tripod.map(([k,t])=>`<li><b>${esc(k)}:</b> ${esc(t)}</li>`).join("")}</ul>`; }
+function fullTripodHTML(c){ return `<ul class="tripod">${c.ftripod.map(([k,t])=>`<li><b>${esc(k)}:</b> ${esc(t)}</li>`).join("")}</ul>`; }
+/* The letter a choice carried on this team's screen, since choices are shuffled. */
+function letterFor(sc, c){ return "ABCD"[orderFor(sc).indexOf(sc.choices.indexOf(c))]; }
 function quoteHTML(sc){ return `<blockquote>${sc.quotes.map(q=>`<p>${esc(q)}</p>`).join("")}</blockquote><p class="small">${esc(sc.chapter)}</p>`; }
 
 /* What a team sees after it chooses: the reply email, then the explanation. */
@@ -1147,7 +1445,8 @@ function resultHTML(sc, c){
     <p>${esc(c.reply)}</p>
     <div class="result ${c.verdict}" role="status">
       <div class="tag">${VERDICT[c.verdict]}</div>
-      ${c.verdict==="good" ? tripodHTML(c) : `<div>${esc(c.expl)}</div>`}
+      <p style="margin:4px 0 8px">${esc(c.full)}</p>
+      ${c.verdict==="good" ? fullTripodHTML(c) : `<p style="margin:0 0 8px"><b>The better answer is ${letterFor(sc, b)}:</b> ${esc(c.better)}</p>`}
       <p class="delta">Risk ${c.risk>0?"+":""}${c.risk} · Productivity ${c.prod>0?"+":""}${c.prod}</p>
     </div>
     <details>
@@ -1187,9 +1486,9 @@ function renderDesk(){
 }
 
 /* Choices appear in a random order so the best answer is not always in the same spot. */
-const ORDER = {};
 function orderFor(sc){
-  if(!ORDER[sc.id]){ const a=sc.choices.map((_,i)=>i); for(let k=a.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1)); [a[k],a[r]]=[a[r],a[k]];} ORDER[sc.id]=a; }
+  const ORDER = (S.order = S.order || {});   /* kept with the team's state, so a reload shows the same letters */
+  if(!ORDER[sc.id]){ const a=sc.choices.map((_,i)=>i); for(let k=a.length-1;k>0;k--){const r=Math.floor(Math.random()*(k+1)); [a[k],a[r]]=[a[r],a[k]];} ORDER[sc.id]=a; save(); }
   return ORDER[sc.id];
 }
 function choose(sc, i){
@@ -1272,7 +1571,7 @@ function renderReport(){
       return `<div class="item">
         <div class="issue">${esc(scn.time)} · ${esc(scn.title)}</div>
         <div class="result ${c.verdict}" style="margin:8px 0"><span class="tag">${VERDICT[c.verdict]}</span><div>${esc(c.label)}</div>
-          ${c.verdict==="good" ? "" : `<p style="margin:8px 0 0">${esc(c.expl)}</p><p class="small" style="margin:6px 0 0">Leg neglected: ${esc(c.legs.map(k=>LEG_NAME[k]).join(", "))}</p>`}
+          ${c.verdict==="good" ? "" : `<p style="margin:8px 0 0">${esc(c.expl)}</p>${c.legs.length ? `<p class="small" style="margin:6px 0 0">Leg neglected: ${esc(c.legs.map(k=>LEG_NAME[k]).join(", "))}</p>` : ""}`}
         </div>
         ${quoteHTML(scn)}
         ${c.verdict==="good" ? "" : `<p style="margin-bottom:0"><b>Best answer:</b> ${esc(b.label)}</p>`}
